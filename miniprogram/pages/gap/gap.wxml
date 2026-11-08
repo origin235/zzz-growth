@@ -1,0 +1,87 @@
+<view class="page pb">
+
+  <view class="hero">
+    <view class="hero-tag">ZZZ · RESOURCE GAP</view>
+    <view class="hero-title">资源持有与缺口</view>
+    <view class="hero-sub">填当前库存，自动扣减并换算刷取电量</view>
+  </view>
+
+  <!-- 小结 -->
+  <view class="card card-lime">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">还需刷取</text>
+      <text class="sec-sub">每日 {{sum.dailyText}}</text>
+    </view>
+    <view class="stat-grid cols3">
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num">{{sum.energyText}}</view>
+          <view class="stat-label">所需电量</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num stat-num-orange">{{sum.daysText}}</view>
+          <view class="stat-label">预计天数</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num stat-num-orange">{{sum.battText}}</view>
+          <view class="stat-label">折合以太电池</view>
+        </view>
+      </view>
+    </view>
+    <view class="hint" wx:if="{{!empty}}">需求来自「计划」页已填角色的材料合计；持有按 3 绿 = 1 蓝、3 蓝 = 1 紫折算。</view>
+    <view class="hint hint-warn" wx:if="{{empty}}">「计划」页还没有填写任何角色，需求为 0。先去计划页设好目标，再回来填库存。</view>
+    <view class="btn-ghost" bindtap="goPlan" wx:if="{{empty}}">去填写养成计划</view>
+  </view>
+
+  <!-- 逐项 -->
+  <view class="gcard" wx:for="{{rows}}" wx:key="key">
+    <view class="ghead">
+      <view class="gname">{{item.name}}<text class="tag tag-gray">{{item.unit}}</text></view>
+      <view class="gflag {{item.done ? 'gflag-done' : ''}}">{{item.done ? '已足够' : '缺 ' + item.gapText}}</view>
+    </view>
+
+    <view class="gbyte">
+      <text class="gb-k">需求 {{item.demandText}}</text>
+      <text class="gb-k" wx:if="{{!item.single}}">等效持有 {{item.equivText}}</text>
+      <text class="gb-k gb-e">{{item.energyText}} 电</text>
+    </view>
+
+    <!-- 单一等级材料：只填一个持有数量 -->
+    <view class="ghold ghold-one" wx:if="{{item.single}}">
+      <view class="hitem">
+        <text class="hlabel">持有数量（{{item.unit}}）</text>
+        <input class="hinput hinput-one" type="number" value="{{item.top}}" data-key="{{item.key}}" data-field="top" bindinput="onHold" placeholder="0" />
+      </view>
+      <view class="hitem hitem-flag">
+        <text class="hlabel">缺口</text>
+        <text class="hgap">{{item.done ? '0' : item.gapText}}</text>
+      </view>
+    </view>
+
+    <!-- 三阶材料：顶 / 中 / 低 -->
+    <view class="ghold" wx:else>
+      <view class="hitem">
+        <text class="hlabel">紫</text>
+        <input class="hinput" type="number" value="{{item.top}}" data-key="{{item.key}}" data-field="top" bindinput="onHold" />
+      </view>
+      <view class="hitem">
+        <text class="hlabel">蓝</text>
+        <input class="hinput" type="number" value="{{item.mid}}" data-key="{{item.key}}" data-field="mid" bindinput="onHold" />
+      </view>
+      <view class="hitem">
+        <text class="hlabel">绿</text>
+        <input class="hinput" type="number" value="{{item.low}}" data-key="{{item.key}}" data-field="low" bindinput="onHold" />
+      </view>
+    </view>
+    <view class="gnote">{{item.note}}</view>
+  </view>
+
+  <view class="btn-ghost" bindtap="clearInv">清空库存</view>
+  <view class="foot">电量按单材料所需局数向上取整后再合计，与飞书原表口径一致。</view>
+
+</view>

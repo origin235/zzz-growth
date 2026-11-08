@@ -1,0 +1,44 @@
+.thead {
+  display: flex;
+  padding: 10rpx 0;
+  border-bottom: 2rpx solid #2e333d;
+}
+.tr {
+  display: flex;
+  padding: 10rpx 0;
+  border-bottom: 2rpx solid #1a1d24;
+}
+.tr:last-child {
+  border-bottom: none;
+}
+.td {
+  flex: 1;
+  min-width: 0;
+  font-size: 20rpx;
+  text-align: center;
+  color: #a8afbb;
+  font-variant-numeric: tabular-nums;
+}
+.td-h {
+  color: #6f7480;
+  font-size: 19rpx;
+  letter-spacing: 1rpx;
+}
+.td-k {
+  color: #d9ff3f;
+  font-weight: 600;
+}
+.td-v {
+  color: #cfd4dd;
+}
+.note {
+  font-size: 22rpx;
+  color: #8b909c;
+  line-height: 1.7;
+  margin-bottom: 8rpx;
+}
+.foot {
+  margin: 20rpx 8rpx 10rpx;
+  font-size: 20rpx;
+  color: #5d636e;
+}

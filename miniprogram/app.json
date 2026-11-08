@@ -1,0 +1,32 @@
+{
+  "pages": [
+    "pages/calc/calc",
+    "pages/plan/plan",
+    "pages/gap/gap",
+    "pages/data/data"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#07080b",
+    "navigationBarTitleText": "绝区零养成助手",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#07080b",
+    "backgroundColorTop": "#07080b",
+    "backgroundColorBottom": "#07080b"
+  },
+  "tabBar": {
+    "color": "#6b7280",
+    "selectedColor": "#d9ff3f",
+    "backgroundColor": "#0e1014",
+    "borderStyle": "black",
+    "list": [
+      { "pagePath": "pages/calc/calc", "text": "计算器" },
+      { "pagePath": "pages/plan/plan", "text": "计划" },
+      { "pagePath": "pages/gap/gap", "text": "缺口" },
+      { "pagePath": "pages/data/data", "text": "数据" }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

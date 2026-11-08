@@ -1,0 +1,149 @@
+<view class="page pb">
+
+  <view class="hero">
+    <view class="hero-tag">ZZZ · SQUAD PLAN</view>
+    <view class="hero-title">多角色养成计划</view>
+    <view class="hero-sub">最多 8 名角色，材料与电量自动汇总</view>
+  </view>
+
+  <!-- 汇总 -->
+  <view class="card card-lime">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">全队合计</text>
+      <text class="sec-sub">{{sum.count}} 名角色</text>
+    </view>
+    <view class="stat-grid">
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num">{{sum.energyText}}</view>
+          <view class="stat-label">合计电量</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num stat-num-orange">{{sum.daysText}}</view>
+          <view class="stat-label">预计天数</view>
+        </view>
+      </view>
+    </view>
+    <view class="mats">
+      <view class="mat" wx:for="{{mats}}" wx:key="name">
+        <view class="mat-v">{{item.value}}</view>
+        <view class="mat-k">{{item.name}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 角色卡片 -->
+  <view class="pcard {{item.empty ? 'pcard-empty' : ''}}" wx:for="{{rows}}" wx:key="k">
+    <view class="phead" bindtap="toggle" data-index="{{index}}">
+      <view class="pnum">{{index + 1}}</view>
+      <view class="pmain">
+        <view class="pname">{{item.name}}</view>
+        <view class="pdesc">{{item.elem}} · {{item.art}} · 等级 {{item.lvText}} · 核心技 {{item.coreText}} · 音擎 {{item.engText}}</view>
+      </view>
+      <view class="pright">
+        <view class="penergy">{{item.energyText}}</view>
+        <view class="punit">电量</view>
+      </view>
+      <view class="pdel" wx:if="{{rows.length > 1}}" catchtap="removeRow" data-index="{{index}}">×</view>
+    </view>
+
+    <view class="pbody" wx:if="{{active === index}}">
+      <view class="row">
+        <text class="label">角色名</text>
+        <input class="name-input" value="{{item.name}}" data-index="{{index}}" bindinput="onName" maxlength="12" placeholder="角色名" />
+      </view>
+
+      <view class="row">
+        <view class="label">属性<text class="label-sub">决定技能芯片种类</text></view>
+        <picker mode="selector" range="{{elements}}" value="{{item.elemIndex}}" data-index="{{index}}" bindchange="onElem">
+          <view class="pick">{{item.elem}}<text class="caret">▾</text></view>
+        </picker>
+      </view>
+
+      <view class="row">
+        <view class="label">特性<text class="label-sub">决定认证章种类</text></view>
+        <picker mode="selector" range="{{arts}}" value="{{item.artIndex}}" data-index="{{index}}" bindchange="onArt">
+          <view class="pick">{{item.art}}<text class="caret">▾</text></view>
+        </picker>
+      </view>
+
+      <view class="row">
+        <view class="label">音擎特性<text class="label-sub">决定音擎组件种类</text></view>
+        <picker mode="selector" range="{{engTypes}}" value="{{item.engTypeIndex}}" data-index="{{index}}" bindchange="onEngType">
+          <view class="pick">{{item.engType}}<text class="caret">▾</text></view>
+        </picker>
+      </view>
+
+      <view class="row">
+        <view class="label">等级<text class="label-sub">只能填 1–60</text></view>
+        <view class="pair">
+          <input class="numin" type="number" maxlength="2" value="{{item.d.lv[0]}}" data-i="{{index}}" data-arr="lv" data-j="0" data-min="1" data-max="60" bindinput="onNum" bindblur="onNumBlur" />
+          <text class="arrow">→</text>
+          <input class="numin" type="number" maxlength="2" value="{{item.d.lv[1]}}" data-i="{{index}}" data-arr="lv" data-j="1" data-min="1" data-max="60" bindinput="onNum" bindblur="onNumBlur" />
+        </view>
+      </view>
+
+      <view class="row">
+        <view class="label">核心技<text class="label-sub">A ~ F，点选</text></view>
+        <view class="pair">
+          <picker range="{{coreLabels}}" value="{{item.core[0]-1}}" data-index="{{index}}" data-end="0" bindchange="onCore">
+            <view class="pick">{{coreLabels[item.core[0]-1]}}<text class="caret">▾</text></view>
+          </picker>
+          <text class="arrow">→</text>
+          <picker range="{{coreLabels}}" value="{{item.core[1]-1}}" data-index="{{index}}" data-end="1" bindchange="onCore">
+            <view class="pick">{{coreLabels[item.core[1]-1]}}<text class="caret">▾</text></view>
+          </picker>
+        </view>
+      </view>
+
+      <view class="skill-head">技能等级（1–12，只能填数字）</view>
+      <view class="row" wx:for="{{item.skills}}" wx:for-item="sk" wx:for-index="si" wx:key="*this">
+        <text class="label">{{skillNames[si]}}</text>
+        <view class="pair">
+          <input class="numin" type="number" maxlength="2" value="{{item.d.sk[si][0]}}" data-i="{{index}}" data-arr="sk" data-si="{{si}}" data-j="0" data-min="1" data-max="12" bindinput="onNum" bindblur="onNumBlur" />
+          <text class="arrow">→</text>
+          <input class="numin" type="number" maxlength="2" value="{{item.d.sk[si][1]}}" data-i="{{index}}" data-arr="sk" data-si="{{si}}" data-j="1" data-min="1" data-max="12" bindinput="onNum" bindblur="onNumBlur" />
+        </view>
+      </view>
+
+      <view class="row">
+        <view class="label">音擎等级<text class="label-sub">{{item.noEng ? '已选择「不含音擎」，不计音擎消耗' : '只能填 1–60；不养就填相同值'}}</text></view>
+        <view class="pair">
+          <input class="numin" type="number" maxlength="2" value="{{item.d.eng[0]}}" data-i="{{index}}" data-arr="eng" data-j="0" data-min="1" data-max="60" bindinput="onNum" bindblur="onNumBlur" />
+          <text class="arrow">→</text>
+          <input class="numin" type="number" maxlength="2" value="{{item.d.eng[1]}}" data-i="{{index}}" data-arr="eng" data-j="1" data-min="1" data-max="60" bindinput="onNum" bindblur="onNumBlur" />
+        </view>
+      </view>
+
+      <view class="pbtns">
+        <view class="minibtn {{item.tpl === 'general' ? 'minibtn-key' : ''}}" data-index="{{index}}" bindtap="fillRowGeneral">通用模版</view>
+        <view class="minibtn {{item.tpl === 'max' ? 'minibtn-key' : ''}}" data-index="{{index}}" bindtap="fillRowMax">满级模板</view>
+        <view class="minibtn {{item.noEng ? 'minibtn-key' : ''}}" data-index="{{index}}" bindtap="toggleNoEng">不含音擎</view>
+        <view class="minibtn" data-index="{{index}}" bindtap="resetRow">重置</view>
+      </view>
+      <view class="thint">通用模版：等级 60 · 核心技 F · 音擎 60 · 技能 普攻11 闪避7 支援7 特殊技11 终结技12（只改目标，不改当前）</view>
+      <view class="thint thint-dim">按钮高亮表示「当前目标」正好等于该模板；手动改过目标后高亮消失。</view>
+    </view>
+  </view>
+
+  <view class="btn-add" bindtap="addRow">{{rows.length < 8 ? '＋ 添加养成角色' : '已达上限 8 名'}}</view>
+  <view class="btn-ghost" bindtap="clearAll">清空全部角色</view>
+  <view class="foot">核心技等级上限受角色等级限制；不养的角色把当前与目标填成相同值即可。</view>
+
+  <!-- 底部固定汇总 -->
+  <view class="bottombar">
+    <view class="bb-left">
+      <view class="bb-label">合计电量</view>
+      <view class="bb-num">{{sum.energyText}}</view>
+    </view>
+    <view class="bb-right">
+      <text class="bb-item">{{sum.daysText}} 天</text>
+      <text class="bb-dot">·</text>
+      <text class="bb-item">{{sum.count}} 名角色</text>
+    </view>
+  </view>
+
+</view>

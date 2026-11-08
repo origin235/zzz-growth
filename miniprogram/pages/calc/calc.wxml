@@ -1,0 +1,157 @@
+<view class="page">
+
+  <view class="hero">
+    <view class="hero-tag">ZZZ · GROWTH COST</view>
+    <view class="hero-title">养成电量计算器</view>
+    <view class="hero-sub">等级 · 技能 · 核心 · 音擎 · 一次算清</view>
+  </view>
+
+  <!-- 养成目标 -->
+  <view class="card">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">养成目标</text>
+      <text class="sec-sub">单个代理人</text>
+    </view>
+
+    <view class="row">
+      <view class="label">属性<text class="label-sub">技能芯片按属性分</text></view>
+      <picker mode="selector" range="{{elements}}" data-field="elem" bindchange="onInfo">
+        <view class="pick">{{info.elem}}<text class="caret">▾</text></view>
+      </picker>
+    </view>
+
+    <view class="row">
+      <view class="label">特性<text class="label-sub">认证章按特性分</text></view>
+      <picker mode="selector" range="{{arts}}" data-field="art" bindchange="onInfo">
+        <view class="pick">{{info.art}}<text class="caret">▾</text></view>
+      </picker>
+    </view>
+
+    <view class="row">
+      <view class="label">音擎特性<text class="label-sub">音擎突破件按特性分</text></view>
+      <picker mode="selector" range="{{engTypes}}" data-field="engType" bindchange="onInfo">
+        <view class="pick">{{info.engType}}<text class="caret">▾</text></view>
+      </picker>
+    </view>
+
+    <view class="row">
+      <view class="label">角色等级</view>
+      <view class="pair">
+        <stepper value="{{t.lvFrom}}" min="1" max="60" step="1" data-field="lvFrom" bind:change="onTargetChange"></stepper>
+        <text class="arrow">→</text>
+        <stepper value="{{t.lvTo}}" min="1" max="60" step="1" data-field="lvTo" bind:change="onTargetChange"></stepper>
+      </view>
+    </view>
+
+    <view class="row">
+      <view class="label">核心技<text class="label-sub">A=1 · F=6</text></view>
+      <view class="pair">
+        <picker range="{{coreLabels}}" value="{{t.coreFrom-1}}" data-field="coreFrom" bindchange="onCorePick">
+          <view class="pick">{{coreLabels[t.coreFrom-1]}}</view>
+        </picker>
+        <text class="arrow">→</text>
+        <picker range="{{coreLabels}}" value="{{t.coreTo-1}}" data-field="coreTo" bindchange="onCorePick">
+          <view class="pick">{{coreLabels[t.coreTo-1]}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="skill-head">技能等级（5 个技能分别填）</view>
+    <view class="row" wx:for="{{skills}}" wx:key="name">
+      <view class="label">{{index + 1}} · {{item.name}}</view>
+      <view class="pair">
+        <stepper value="{{item.from}}" min="1" max="12" step="1" data-index="{{index}}" data-end="from" bind:change="onSkillChange"></stepper>
+        <text class="arrow">→</text>
+        <stepper value="{{item.to}}" min="1" max="12" step="1" data-index="{{index}}" data-end="to" bind:change="onSkillChange"></stepper>
+      </view>
+    </view>
+
+    <view class="row">
+      <view class="label">音擎等级<text class="label-sub">按 20/30/40/50/60 里程碑累计</text></view>
+      <view class="pair">
+        <stepper value="{{t.engFrom}}" min="1" max="60" step="1" data-field="engFrom" bind:change="onTargetChange"></stepper>
+        <text class="arrow">→</text>
+        <stepper value="{{t.engTo}}" min="1" max="60" step="1" data-field="engTo" bind:change="onTargetChange"></stepper>
+      </view>
+    </view>
+  </view>
+
+  <!-- 参数 -->
+  <view class="card">
+    <view class="sec" bindtap="toggleParams">
+      <view class="sec-bar"></view>
+      <text class="sec-title">电量与掉落参数</text>
+      <text class="sec-sub">{{showParams ? '收起 ▲' : '展开 ▼'}}</text>
+    </view>
+    <view wx:if="{{showParams}}">
+      <view class="row" wx:for="{{paramRows}}" wx:key="key">
+        <view class="label">{{item.name}}<text class="label-sub">单位：{{item.unit}}</text></view>
+        <input class="param-input" type="digit" value="{{item.text}}" data-key="{{item.key}}" data-index="{{index}}" bindinput="onParamInput" />
+      </view>
+      <view class="btn-ghost" bindtap="resetParams">恢复默认参数</view>
+    </view>
+    <view wx:else class="hint">按最高难度实战模拟室 20 电量/局、社区实测均值估算，想改掉落就点开这里。</view>
+  </view>
+
+  <!-- 材料清单 -->
+  <view class="card">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">材料需求与电量折算</text>
+      <text class="sec-sub">AUTO</text>
+    </view>
+    <view class="mrow" wx:for="{{items}}" wx:key="key">
+      <view class="mrow-l">
+        <view class="mrow-name">{{item.name}}</view>
+        <view class="mrow-note">{{item.note}}</view>
+      </view>
+      <view class="mrow-r">
+        <view class="mrow-qty">{{item.qtyText}}<text class="unit">{{item.unit}}</text></view>
+        <view class="mrow-energy {{item.hasEnergy ? '' : 'zero'}}">{{item.hasEnergy ? item.energyText + ' 电' : '不计电量'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 结论 -->
+  <view class="card card-lime">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">结论</text>
+      <text class="sec-sub">DAILY {{sum.daily}}</text>
+    </view>
+    <view class="stat-grid">
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num">{{sum.total}}</view>
+          <view class="stat-label">所需电量合计</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num">{{sum.days}}</view>
+          <view class="stat-label">预计天数</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num stat-num-orange">{{sum.batteries}}</view>
+          <view class="stat-label">折合以太电池（60/个）</view>
+        </view>
+      </view>
+      <view class="stat">
+        <view class="stat-box">
+          <view class="stat-num stat-num-orange">{{sum.ratio}}</view>
+          <view class="stat-label">角色本体占比（不含音擎）</view>
+        </view>
+      </view>
+    </view>
+    <view class="hint">不含音擎：{{sum.noEngTotal}} 电量，约 {{sum.noEngDays}} 天（每日可用 {{sum.daily}} 电量）</view>
+  </view>
+
+  <view class="btn-main" bindtap="saveToPlan">写入养成计划</view>
+  <view class="btn-ghost" bindtap="fillMax">套用满级模板（1→60 全满）</view>
+
+  <view class="foot">数据取自官方/维基与社区实测，掉落有浮动，可在参数区自行调整。</view>
+
+</view>

@@ -1,0 +1,40 @@
+<view class="page">
+
+  <view class="hero">
+    <view class="hero-tag">ZZZ · DATA SHEET</view>
+    <view class="hero-title">养成数据表</view>
+    <view class="hero-sub">官方/维基数据 · 只读参考</view>
+  </view>
+
+  <view class="card" wx:for="{{tables}}" wx:key="id">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">{{item.title}}</text>
+      <text class="sec-sub">{{item.sub}}</text>
+    </view>
+
+    <view class="thead">
+      <view class="td td-h" wx:for="{{item.headers}}" wx:for-item="h" wx:for-index="hi" wx:key="*this">{{h}}</view>
+    </view>
+    <view class="tr" wx:for="{{item.rows}}" wx:for-item="row" wx:for-index="ri" wx:key="*this">
+      <view class="td {{ci === 0 ? 'td-k' : 'td-v'}}" wx:for="{{row}}" wx:for-item="cell" wx:for-index="ci" wx:key="*this">{{cell}}</view>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="sec">
+      <view class="sec-bar"></view>
+      <text class="sec-title">口径说明</text>
+    </view>
+    <view class="note">· 非整十级经验按段内线性估算：20 级 3 万 / 30 级 9 万 / 40 级 22.5 万 / 50 级 45 万 / 60 级 90 万，其中 50→60 占全部经验的一半。</view>
+    <view class="note">· 突破里程碑为 20 / 30 / 40 / 50 / 60，达到即消耗；认证章 4 / 32 / 30，丁尼合计 80 万。</view>
+    <view class="note">· 5 个技能全 12 级：基础芯片 25、进阶 75、特化 250、仓鼠笼 5、丁尼 250 万。</view>
+    <view class="note">· 核心 A→F：高维数据 60、周本素材 9、丁尼 40.5 万。</view>
+    <view class="note">· 音擎 1→60：能源模块 200、音擎突破件 66、丁尼 40 万。</view>
+    <view class="note">· 技能芯片按「属性」分，等级突破认证章与音擎突破件按「特性」分；总数量不随属性 / 特性变化，只是材料种类不同。</view>
+    <view class="note">· 计划页多角色时，同属性（同芯片）与同特性（同认证章 / 同组件）自动合并，不同属性 / 不同特性分别出账。</view>
+    <view class="note">· 烈霜沿用冰结芯片（星见雅口径），流明 / 玄墨 / 凛刃各有独立芯片系列。</view>
+  </view>
+
+  <view class="foot">数据仅用于估算，实际掉落存在浮动。</view>
+</view>

@@ -1,0 +1,265 @@
+/* ========== 绝区零养成助手 · 全局样式 ========== */
+page {
+  background: #07080b;
+  color: #e9ecf1;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.45;
+  padding-bottom: 40rpx;
+}
+
+/* 页面容器 */
+.page {
+  padding: 24rpx 24rpx 24rpx;
+  box-sizing: border-box;
+}
+
+/* 顶部标题区 */
+.hero {
+  position: relative;
+  padding: 32rpx 28rpx 30rpx;
+  margin-bottom: 20rpx;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(217, 255, 63, 0.16), transparent 42%),
+    linear-gradient(135deg, #14161c 0%, #0b0c10 100%);
+  border: 2rpx solid #262a33;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  right: -40rpx;
+  top: -40rpx;
+  width: 160rpx;
+  height: 160rpx;
+  background: rgba(217, 255, 63, 0.07);
+  transform: rotate(45deg);
+}
+.hero-tag {
+  display: inline-block;
+  font-size: 20rpx;
+  letter-spacing: 4rpx;
+  color: #d9ff3f;
+  border: 2rpx solid rgba(217, 255, 63, 0.4);
+  background: rgba(217, 255, 63, 0.08);
+  padding: 2rpx 12rpx;
+  border-radius: 4rpx;
+  margin-bottom: 14rpx;
+}
+.hero-title {
+  font-size: 44rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  color: #f4f6f9;
+}
+.hero-sub {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #8b909c;
+  letter-spacing: 1rpx;
+}
+
+/* 卡片 */
+.card {
+  background: #12141a;
+  border: 2rpx solid #262a33;
+  border-radius: 10rpx;
+  padding: 26rpx 24rpx;
+  margin-bottom: 20rpx;
+}
+.card-lime {
+  border-color: rgba(217, 255, 63, 0.35);
+  background: linear-gradient(160deg, #16190f 0%, #101216 60%);
+}
+
+/* 小节标题 */
+.sec {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+.sec-bar {
+  width: 6rpx;
+  height: 30rpx;
+  background: #d9ff3f;
+  margin-right: 14rpx;
+  border-radius: 2rpx;
+}
+.sec-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  letter-spacing: 1rpx;
+  color: #f0f2f5;
+}
+.sec-sub {
+  margin-left: auto;
+  font-size: 20rpx;
+  color: #6f7480;
+  letter-spacing: 2rpx;
+}
+
+/* 表单行 */
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 84rpx;
+  padding: 8rpx 0;
+  border-bottom: 2rpx solid #1c1f26;
+}
+.row:last-child {
+  border-bottom: none;
+}
+.label {
+  font-size: 26rpx;
+  color: #cfd4dd;
+  flex: 1;
+  min-width: 0;
+}
+.label-sub {
+  display: block;
+  font-size: 20rpx;
+  color: #6f7480;
+  margin-top: 4rpx;
+}
+.pair {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.arrow {
+  margin: 0 12rpx;
+  color: #6f7480;
+  font-size: 24rpx;
+}
+.pick {
+  min-width: 88rpx;
+  text-align: center;
+  padding: 10rpx 16rpx;
+  background: #1b1e26;
+  border: 2rpx solid #2e333d;
+  border-radius: 6rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #e9ecf1;
+}
+.caret {
+  margin-left: 6rpx;
+  font-size: 18rpx;
+  color: #6f7480;
+}
+
+/* 数值强调 */
+.num {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #d9ff3f;
+  font-variant-numeric: tabular-nums;
+}
+.num-dim {
+  color: #a8afbb;
+}
+.muted {
+  color: #6f7480;
+  font-size: 22rpx;
+}
+.unit {
+  font-size: 20rpx;
+  color: #6f7480;
+  margin-left: 6rpx;
+}
+
+/* 结论统计块 */
+.stat-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -8rpx;
+}
+.stat {
+  width: 50%;
+  padding: 8rpx;
+  box-sizing: border-box;
+}
+.stat-box {
+  background: #161920;
+  border: 2rpx solid #262a33;
+  border-radius: 8rpx;
+  padding: 18rpx 18rpx 16rpx;
+  height: 100%;
+  box-sizing: border-box;
+}
+.stat-num {
+  font-size: 42rpx;
+  font-weight: 800;
+  color: #d9ff3f;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-num-orange {
+  color: #ff8a3d;
+}
+.stat-label {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  color: #8b909c;
+}
+
+/* 大按钮 */
+.btn-main {
+  margin-top: 8rpx;
+  background: #d9ff3f;
+  color: #0a0b0e;
+  font-size: 28rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  padding: 22rpx 0;
+  border-radius: 8rpx;
+  text-align: center;
+}
+.btn-main:active {
+  background: #c4e836;
+}
+.btn-ghost {
+  margin-top: 16rpx;
+  border: 2rpx solid #333844;
+  color: #cfd4dd;
+  font-size: 26rpx;
+  padding: 20rpx 0;
+  border-radius: 8rpx;
+  text-align: center;
+}
+.btn-ghost:active {
+  background: #171a21;
+}
+
+/* 小标签 */
+.tag {
+  display: inline-block;
+  padding: 2rpx 10rpx;
+  border-radius: 4rpx;
+  font-size: 20rpx;
+  background: rgba(217, 255, 63, 0.1);
+  color: #d9ff3f;
+  margin-left: 8rpx;
+}
+.tag-orange {
+  background: rgba(255, 107, 53, 0.12);
+  color: #ff8a3d;
+}
+.tag-gray {
+  background: rgba(255, 255, 255, 0.06);
+  color: #8b909c;
+}
+
+/* 提示条 */
+.hint {
+  font-size: 22rpx;
+  color: #7b818d;
+  line-height: 1.6;
+  padding: 14rpx 18rpx;
+  background: #0e1015;
+  border-left: 4rpx solid #2e333d;
+  border-radius: 0 6rpx 6rpx 0;
+  margin-top: 12rpx;
+}

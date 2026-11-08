@@ -1,0 +1,5 @@
+<view class="stepper">
+  <view class="sbtn {{value <= min ? 'sbtn-off' : ''}}" bindtap="onMinus">−</view>
+  <input class="sinput" type="number" value="{{value}}" bindinput="onInput" />
+  <view class="sbtn {{value >= max ? 'sbtn-off' : ''}}" bindtap="onPlus">+</view>
+</view>

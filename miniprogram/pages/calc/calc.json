@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "养成电量计算器",
+  "usingComponents": {
+    "stepper": "../../components/stepper/stepper"
+  }
+}

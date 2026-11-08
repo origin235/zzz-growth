@@ -1,0 +1,32 @@
+.stepper {
+  display: flex;
+  align-items: center;
+  background: #1b1e26;
+  border: 2rpx solid #2e333d;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.sbtn {
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  font-size: 32rpx;
+  color: #d9ff3f;
+  background: #151821;
+}
+.sbtn:active {
+  background: #232733;
+}
+.sbtn-off {
+  color: #41464f;
+}
+.sinput {
+  width: 86rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  text-align: center;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #e9ecf1;
+}

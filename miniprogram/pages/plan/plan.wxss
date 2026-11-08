@@ -1,0 +1,253 @@
+.pdel {
+  width: 48rpx;
+  text-align: center;
+  font-size: 30rpx;
+  color: #7b818d;
+  padding-left: 12rpx;
+}
+.btn-add {
+  margin: 24rpx 0 0;
+  height: 88rpx;
+  line-height: 88rpx;
+  text-align: center;
+  font-size: 26rpx;
+  color: #d9ff3f;
+  border: 2rpx dashed rgba(217, 255, 63, 0.5);
+  border-radius: 8rpx;
+  background: rgba(217, 255, 63, 0.04);
+}
+.pick {
+  width: 104rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #f0f2f5;
+  background: #1b1e26;
+  border: 2rpx solid #2e333d;
+  border-radius: 6rpx;
+  box-sizing: border-box;
+}
+.caret {
+  font-size: 18rpx;
+  color: #7b818d;
+  margin-left: 6rpx;
+}
+.thint-dim {
+  border-left-color: transparent;
+  background: transparent;
+  padding-left: 0;
+  color: #5d636e;
+}
+
+/* 数字输入框（替代步进器） */
+.numin {
+  width: 104rpx;
+  height: 64rpx;
+  line-height: 64rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #f0f2f5;
+  background: #1b1e26;
+  border: 2rpx solid #2e333d;
+  border-radius: 6rpx;
+  box-sizing: border-box;
+  font-variant-numeric: tabular-nums;
+}
+.numin:focus {
+  border-color: #d9ff3f;
+}
+.skill-head {
+  margin: 20rpx 0 4rpx;
+  font-size: 22rpx;
+  color: #7b818d;
+  letter-spacing: 1rpx;
+}
+.thint {
+  margin-top: 12rpx;
+  font-size: 20rpx;
+  line-height: 1.6;
+  color: #7b818d;
+  background: #0b0d12;
+  border-left: 4rpx solid #3a3f4b;
+  border-radius: 0 6rpx 6rpx 0;
+  padding: 10rpx 14rpx;
+}
+.minibtn-key {
+  color: #d9ff3f;
+  border-color: rgba(217, 255, 63, 0.5);
+  background: rgba(217, 255, 63, 0.06);
+}
+.pb {
+  padding-bottom: 240rpx;
+}
+/* 材料小格 */
+.mats {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 6rpx -6rpx 0;
+}
+.mat {
+  width: 33.33%;
+  padding: 6rpx;
+  box-sizing: border-box;
+}
+.mat {
+  text-align: left;
+}
+.mat-v {
+  font-size: 26rpx;
+  font-weight: 700;
+  color: #e9ecf1;
+  font-variant-numeric: tabular-nums;
+}
+.mat-k {
+  font-size: 20rpx;
+  color: #7b818d;
+  margin-top: 2rpx;
+}
+
+/* 角色卡 */
+.pcard {
+  background: #12141a;
+  border: 2rpx solid #262a33;
+  border-radius: 10rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+}
+.pcard-empty {
+  opacity: 0.62;
+}
+.phead {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 20rpx;
+}
+.phead:active {
+  background: #171a21;
+}
+.pnum {
+  width: 46rpx;
+  height: 46rpx;
+  line-height: 46rpx;
+  text-align: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  color: #0a0b0e;
+  background: #d9ff3f;
+  border-radius: 4rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+.pmain {
+  flex: 1;
+  min-width: 0;
+}
+.pname {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #f0f2f5;
+}
+.pdesc {
+  font-size: 20rpx;
+  color: #7b818d;
+  margin-top: 6rpx;
+}
+.pright {
+  text-align: right;
+  margin-left: 12rpx;
+  flex-shrink: 0;
+}
+.penergy {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #d9ff3f;
+  font-variant-numeric: tabular-nums;
+}
+.punit {
+  font-size: 18rpx;
+  color: #6f7480;
+}
+.pbody {
+  padding: 6rpx 20rpx 20rpx;
+  border-top: 2rpx solid #1c1f26;
+  background: #0f1116;
+}
+.name-input {
+  width: 260rpx;
+  height: 60rpx;
+  text-align: right;
+  font-size: 26rpx;
+  color: #e9ecf1;
+  background: #1b1e26;
+  border: 2rpx solid #2e333d;
+  border-radius: 6rpx;
+  padding: 0 16rpx;
+  box-sizing: border-box;
+}
+.pbtns {
+  display: flex;
+  margin-top: 16rpx;
+}
+.minibtn {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  color: #cfd4dd;
+  border: 2rpx solid #333844;
+  border-radius: 6rpx;
+  padding: 16rpx 0;
+  margin-right: 16rpx;
+}
+.minibtn:last-child {
+  margin-right: 0;
+}
+.minibtn:active {
+  background: #171a21;
+}
+
+/* 底部栏 */
+.bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18rpx 28rpx calc(18rpx + env(safe-area-inset-bottom));
+  background: rgba(10, 11, 14, 0.96);
+  border-top: 2rpx solid #262a33;
+  z-index: 20;
+}
+.bb-left {
+  display: flex;
+  align-items: baseline;
+}
+.bb-label {
+  font-size: 22rpx;
+  color: #7b818d;
+  margin-right: 12rpx;
+}
+.bb-num {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #d9ff3f;
+  font-variant-numeric: tabular-nums;
+}
+.bb-right {
+  font-size: 22rpx;
+  color: #8b909c;
+}
+.bb-dot {
+  margin: 0 8rpx;
+  color: #41464f;
+}
+.foot {
+  margin: 20rpx 8rpx 10rpx;
+  font-size: 20rpx;
+  color: #5d636e;
+  line-height: 1.7;
+}

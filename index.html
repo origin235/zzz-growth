@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>绝区零养成助手 · 养成电量计算器</title>
+<style>
+:root{
+  --bg:#07080b;--panel:#12141a;--panel2:#161920;--line:#262a33;--line2:#2e333d;
+  --text:#e9ecf1;--sub:#8b909c;--dim:#6f7480;--lime:#d9ff3f;--orange:#ff8a3d;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",sans-serif;font-size:14px;line-height:1.45}
+#app{max-width:560px;margin:0 auto;padding:14px 14px 150px}
+.hero{position:relative;padding:16px 14px 15px;margin-bottom:12px;border:1px solid var(--line);border-radius:6px;
+  background:radial-gradient(circle at 88% 12%,rgba(217,255,63,.16),transparent 42%),linear-gradient(135deg,#14161c,#0b0c10);overflow:hidden}
+.hero:after{content:"";position:absolute;right:-20px;top:-20px;width:80px;height:80px;background:rgba(217,255,63,.07);transform:rotate(45deg)}
+.tag{display:inline-block;font-size:10px;letter-spacing:2px;color:var(--lime);border:1px solid rgba(217,255,63,.4);background:rgba(217,255,63,.08);padding:1px 6px;border-radius:2px;margin-bottom:7px}
+h1{font-size:22px;margin:0;letter-spacing:1px}
+.hero .sub{margin-top:4px;font-size:11px;color:var(--sub)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:13px 12px;margin-bottom:10px}
+.card.lime{border-color:rgba(217,255,63,.35);background:linear-gradient(160deg,#16190f,#101216 60%)}
+.sec{display:flex;align-items:center;margin-bottom:10px}
+.bar{width:3px;height:15px;background:var(--lime);margin-right:7px;border-radius:1px}
+.sec h2{font-size:15px;margin:0;letter-spacing:.5px}
+.sec .r{margin-left:auto;font-size:10px;color:var(--dim);letter-spacing:1px}
+.row{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:4px 0;border-bottom:1px solid #1c1f26}
+.row:last-child{border-bottom:none}
+.label{font-size:13px;color:#cfd4dd}
+.sublabel{display:block;font-size:10px;color:var(--dim);margin-top:2px}
+.pair{display:flex;align-items:center;flex-shrink:0}
+.arrow{margin:0 6px;color:var(--dim);font-size:12px}
+.step{display:flex;align-items:center;background:#1b1e26;border:1px solid var(--line2);border-radius:4px;overflow:hidden}
+.step button{width:30px;height:30px;border:0;background:#151821;color:var(--lime);font-size:16px;line-height:1}
+.step button:active{background:#232733}
+.step span{min-width:40px;text-align:center;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.picksel{width:56px;height:32px;padding:0 6px;font-size:13px;font-weight:600;color:var(--text);background:#1b1e26;border:1px solid var(--line2);border-radius:4px;outline:none;-webkit-appearance:none;appearance:none;text-align:center;text-align-last:center}
+.thint.dim{border-left-color:transparent;background:transparent;padding-left:0;color:#5d636e}
+.pickbtn{min-width:46px;text-align:center;padding:6px 8px;background:#1b1e26;border:1px solid var(--line2);border-radius:4px;font-size:13px;font-weight:600;color:var(--text)}
+.num{font-weight:700;color:var(--lime);font-variant-numeric:tabular-nums}
+.stat-grid{display:flex;flex-wrap:wrap;margin:0 -4px}
+.stat{width:50%;padding:4px}
+.statbox{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:9px}
+.statbox b{display:block;font-size:21px;color:var(--lime);line-height:1.1;font-variant-numeric:tabular-nums}
+.statbox b.o{color:var(--orange)}
+.statbox i{display:block;font-style:normal;font-size:11px;color:var(--sub);margin-top:4px}
+.mrow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1c1f26}
+.mrow:last-child{border-bottom:none}
+.mrow .n{font-size:13px;color:#e0e4ea}
+.mrow .note{font-size:10px;color:var(--dim)}
+.mrow .r{text-align:right;margin-left:8px}
+.mrow .q{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums}
+.mrow .e{font-size:11px;color:var(--lime);margin-top:2px}
+.mrow .e.zero{color:#5d636e}
+.hint{font-size:11px;color:#7b818d;line-height:1.6;padding:7px 9px;background:#0e1015;border-left:2px solid var(--line2);border-radius:0 4px 4px 0;margin-top:6px}
+.btn{display:block;width:100%;border:0;margin-top:8px;background:var(--lime);color:#0a0b0e;font-size:14px;font-weight:700;letter-spacing:1px;padding:11px 0;border-radius:4px}
+.btng{display:block;width:100%;border:1px solid #333844;background:transparent;color:#cfd4dd;font-size:13px;padding:10px 0;border-radius:4px;margin-top:8px}
+.pcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;margin-bottom:8px;overflow:hidden}
+.pcard.empty{opacity:.62}
+.pdel{background:none;border:0;color:#7b818d;font-size:16px;padding:0 4px;line-height:1}
+.btng.add{color:var(--lime);border-color:rgba(217,255,63,.5);background:rgba(217,255,63,.04);margin-bottom:8px}
+.phead{display:flex;align-items:center;padding:11px 10px}
+.phead.on{background:var(--panel2)}
+.pnum{width:23px;height:23px;line-height:23px;text-align:center;font-size:11px;font-weight:700;color:#0a0b0e;background:var(--lime);border-radius:2px;margin-right:8px;flex-shrink:0}
+.pmain{flex:1;min-width:0}
+.pname{font-size:14px;font-weight:600}
+.pdesc{font-size:10px;color:#7b818d;margin-top:3px}
+.pen{font-size:15px;font-weight:700;color:var(--lime);font-variant-numeric:tabular-nums}
+.punit{font-size:9px;color:var(--dim);text-align:right}
+.pbody{padding:4px 10px 10px;border-top:1px solid #1c1f26;background:#0f1116}
+.numin{width:44px;height:32px;text-align:center;font-size:13px;font-weight:600;color:var(--text);background:#1b1e26;border:1px solid var(--line2);border-radius:4px;font-variant-numeric:tabular-nums}
+.minibtn.key{color:var(--lime);border-color:rgba(217,255,63,.5);background:rgba(217,255,63,.06)}
+.thint{margin-top:6px;font-size:10px;line-height:1.6;color:#7b818d;background:#0b0d12;border-left:2px solid #3a3f4b;border-radius:0 4px 4px 0;padding:5px 8px}
+.minibtn{flex:1;text-align:center;font-size:12px;color:#cfd4dd;border:1px solid #333844;border-radius:4px;padding:8px 0;margin-right:8px;background:transparent}
+.minibtn:last-child{margin-right:0}
+.mats{display:flex;flex-wrap:wrap;margin:4px -3px 0}
+.mats>div{width:33.33%;padding:3px}
+.mats b{display:block;font-size:13px;font-variant-numeric:tabular-nums}
+.mats i{display:block;font-style:normal;font-size:10px;color:#7b818d}
+.gcard{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:11px;margin-bottom:8px}
+.ghead{display:flex;align-items:center;justify-content:space-between}
+.gname{font-size:14px;font-weight:600}
+.unit{font-size:10px;color:var(--sub);background:rgba(255,255,255,.06);padding:1px 6px;border-radius:2px;margin-left:6px}
+.gflag{font-size:11px;color:var(--lime);background:rgba(217,255,63,.09);border-radius:2px;padding:2px 6px}
+.gflag.done{color:var(--sub);background:rgba(255,255,255,.05)}
+.stat-grid.cols3 .stat{width:33.333%}
+.gbyte{display:flex;flex-wrap:wrap;margin:6px 0 2px;font-size:10.5px;color:var(--sub)}
+.gbyte span{margin-right:12px}
+.gbyte .e{color:var(--lime)}
+.ghold{display:flex;margin:6px -4px 0}
+.hitem{flex:1;padding:0 4px}
+.hitem em{display:block;font-style:normal;font-size:10px;color:var(--dim);margin-bottom:3px}
+.hitem input{width:100%;height:32px;text-align:center;font-size:13px;color:var(--text);background:#1b1e26;border:1px solid var(--line2);border-radius:4px}
+.ghold.one{align-items:flex-end}
+.hitem.grow{flex:2}
+.hitem.flag{flex:0 0 88px;text-align:right}
+.hitem input.big{text-align:left;padding:0 10px;height:36px;font-size:14px;font-weight:600}
+.gapv{display:block;height:36px;line-height:36px;font-size:14px;color:var(--lime);font-variant-numeric:tabular-nums}
+.gnote{font-size:10px;color:var(--dim);margin-top:6px}
+.thead,.tr{display:flex;padding:5px 0}
+.thead{border-bottom:1px solid var(--line2)}
+.tr{border-bottom:1px solid #1a1d24}
+.tr:last-child{border-bottom:none}
+.td{flex:1;font-size:10.5px;text-align:center;color:#cfd4dd;font-variant-numeric:tabular-nums}
+.td.h{color:var(--dim);font-size:10px}
+.td.k{color:var(--lime);font-weight:600}
+.tfoot{margin:10px 4px 0;font-size:10.5px;color:#5d636e;line-height:1.7}
+.tabs{position:fixed;left:0;right:0;bottom:0;display:flex;background:#0e1014;border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:9}
+.tabs button{flex:1;background:transparent;border:0;color:var(--dim);font-size:12px;padding:11px 0 9px}
+.tabs button.on{color:var(--lime);font-weight:700}
+.tabs button span{display:block;font-size:9px;letter-spacing:1px;opacity:.7;margin-top:1px}
+.pbar{position:fixed;left:0;right:0;bottom:49px;background:rgba(10,11,14,.96);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:8px 14px;z-index:8}
+.pbar .l{font-size:11px;color:#7b818d}
+.pbar b{font-size:18px;color:var(--lime);font-variant-numeric:tabular-nums}
+.pbar .r{font-size:11px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+var module = { exports: {} };
+/**
+ * 绝区零养成数据表
+ * 数据来源：官方/维基数据整理（与原飞书表格「数据表」子表一致）
+ * 单位说明：经验=点，丁尼=丁尼，芯片/认证章=个，高维数据=个
+ */
+
+// ① 代理人等级累计经验（官方分段数据；段内按线性估算）
+// lv：该段起始等级；cum：升到该等级所需累计经验；per：该段每级经验
+const EXP = [
+  { lv: 1, cum: 0, per: 1578.9 },
+  { lv: 20, cum: 30000, per: 6000 },
+  { lv: 30, cum: 90000, per: 13500 },
+  { lv: 40, cum: 225000, per: 22500 },
+  { lv: 50, cum: 450000, per: 45000 },
+  { lv: 60, cum: 900000, per: 45000 }
+];
+
+// ② 等级突破：达到 lv 时一次性消耗（认证章 / 丁尼）
+const BREAK = [
+  { lv: 20, low: 4, mid: 0, high: 0, denny: 24000 },
+  { lv: 30, low: 0, mid: 12, high: 0, denny: 56000 },
+  { lv: 40, low: 0, mid: 20, high: 0, denny: 120000 },
+  { lv: 50, low: 0, mid: 0, high: 10, denny: 200000 },
+  { lv: 60, low: 0, mid: 0, high: 20, denny: 400000 }
+];
+
+// ③ 单个技能累计消耗（技能等级 1~12）
+const SKILL = [
+  { lv: 1, basic: 0, adv: 0, spec: 0, denny: 0, hamster: 0 },
+  { lv: 2, basic: 2, adv: 0, spec: 0, denny: 2000, hamster: 0 },
+  { lv: 3, basic: 5, adv: 0, spec: 0, denny: 5000, hamster: 0 },
+  { lv: 4, basic: 5, adv: 2, spec: 0, denny: 11000, hamster: 0 },
+  { lv: 5, basic: 5, adv: 5, spec: 0, denny: 20000, hamster: 0 },
+  { lv: 6, basic: 5, adv: 9, spec: 0, denny: 32000, hamster: 0 },
+  { lv: 7, basic: 5, adv: 15, spec: 0, denny: 50000, hamster: 0 },
+  { lv: 8, basic: 5, adv: 15, spec: 5, denny: 95000, hamster: 0 },
+  { lv: 9, basic: 5, adv: 15, spec: 13, denny: 162500, hamster: 0 },
+  { lv: 10, basic: 5, adv: 15, spec: 23, denny: 252500, hamster: 0 },
+  { lv: 11, basic: 5, adv: 15, spec: 35, denny: 365000, hamster: 0 },
+  { lv: 12, basic: 5, adv: 15, spec: 50, denny: 500000, hamster: 1 }
+];
+
+// ④ 核心技累计消耗（1=A 2=B 3=C 4=D 5=E 6=F）
+const CORE = [
+  { lv: 1, dim: 0, weekly: 0, denny: 5000 },
+  { lv: 2, dim: 2, weekly: 0, denny: 17000 },
+  { lv: 3, dim: 6, weekly: 0, denny: 45000 },
+  { lv: 4, dim: 15, weekly: 5, denny: 105000 },
+  { lv: 5, dim: 30, weekly: 8, denny: 205000 },
+  { lv: 6, dim: 60, weekly: 9, denny: 405000 }
+];
+
+// ⑤ 音擎累计消耗（突破里程碑 1/20/30/40/50/60）
+const ENGINE = [
+  { lv: 1, module: 0, part: 0, denny: 0 },
+  { lv: 20, module: 3, part: 4, denny: 8000 },
+  { lv: 30, module: 13, part: 16, denny: 32000 },
+  { lv: 40, module: 40, part: 36, denny: 82000 },
+  { lv: 50, module: 100, part: 46, denny: 182000 },
+  { lv: 60, module: 200, part: 66, denny: 400000 }
+];
+
+// 默认电量与掉落参数（可调）
+const PARAMS = {
+  runEnergy: 20,        // 实战模拟室单局电量
+  expYield: 12600,      // 单局代理人经验产出
+  dennyYield: 25000,    // 单局丁尼产出
+  lowYield: 12,         // 单局初阶认证章产出
+  midYield: 5.5,        // 单局高阶认证章产出
+  highYield: 1.5,       // 单局特化认证章产出
+  basicYield: 8,        // 单局基础芯片产出
+  advYield: 6,          // 单局进阶芯片产出
+  specYield: 1.5,       // 单局特化芯片产出
+  dimEnergy: 40,        // 专家挑战室单局电量
+  dimYield: 5,        // 单局高维数据产出
+  engEnergy: 20,        // 音擎副本单局电量
+  moduleYield: 5,       // 单局能源模块产出
+  partYield: 3,         // 单局改装部件产出
+  dailyNatural: 240,    // 每日自然恢复电量
+  dailyCoffee: 80,      // 每日咖啡电量
+  dailyExtra: 0         // 每日额外电量
+};
+
+const CORE_LABELS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+const SKILL_NAMES = ['普攻', '闪避', '支援', '特殊技', '终结技'];
+
+
+/* 代理人属性 / 特性（职业）/ 音擎特性 —— 名称取自米游社官方词条（截至 3.3 版本） */
+const ELEMENTS = ['物理', '火', '冰', '电', '以太', '风', '烈霜', '流明', '玄墨', '凛刃'];
+const ARTS = ['强攻', '击破', '异常', '支援', '防护', '命破', '锋御'];
+// 音擎特性与代理人特性同名：音擎突破件按「特性」分
+const ENG_TYPES = ['强攻', '击破', '异常', '支援', '防护', '命破', '锋御'];
+
+// 认证章按「特性」分：初阶（绿）/ 高阶（蓝）/ 专属（紫，各级名称取自官方词条）
+const CERT_PURPLE = {
+  强攻: '先行者认证章', 击破: '破阵者认证章', 异常: '掌控者认证章',
+  支援: '统御者认证章', 防护: '捍卫者认证章',
+  命破: '裁决者认证章', 锋御: '执锋者认证章'
+};
+
+/**
+ * 芯片按「属性」分：基础 / 进阶 / 特化 + 属性芯片名。
+ * 特殊属性沿用属性芯片：烈霜 → 冰结芯片（星见雅已确认），
+ * 流明 / 玄墨 / 凛刃有各自的芯片系列。
+ */
+const CHIP_STEM = {
+  物理: '物理', 火: '引燃', 冰: '冰结', 电: '电击', 以太: '以太',
+  风: '风蚀', 烈霜: '冰结', 流明: '流明', 玄墨: '玄墨', 凛刃: '凛刃'
+};
+
+function chipName(tier, elem) {
+  const stem = CHIP_STEM[elem] || elem;
+  return tier + stem + '芯片';
+}
+
+function certName(tier, art) {
+  if (tier === '紫') return CERT_PURPLE[art] || (art + '认证章');
+  return tier + art + '认证章';
+}
+
+// 音擎突破件：普通（绿）/ 增强型（蓝）/ 特化型（紫）+ 特性 + 组件
+function partName(tier, engType) {
+  const t = engType.replace(/型$/, '');
+  return tier + t + '组件';
+}
+
+module.exports = {
+  ELEMENTS: ELEMENTS,
+  ARTS: ARTS,
+  ENG_TYPES: ENG_TYPES,
+  CERT_PURPLE: CERT_PURPLE,
+  CHIP_STEM: CHIP_STEM,
+  chipName: chipName,
+  certName: certName,
+  partName: partName,
+  EXP,
+  BREAK,
+  SKILL,
+  CORE,
+  ENGINE,
+  PARAMS,
+  CORE_LABELS,
+  SKILL_NAMES
+};
+
+var D = module.exports;
+module = { exports: {} };
+/**
+ * 绝区零养成计算核心
+ * 算法与飞书表格一致：
+ *   1) 经验按官方分段线性估算
+ *   2) 突破/技能/核心/音擎 用累计表做差值
+ *   3) 单材料折算电量 = 数量 × 单局电量 ÷ 单局产出
+ *   4) 缺口页：等效持有 = 顶 + 中/x + 低/y；局数向上取整
+ */
+/* D 由外层注入 */
+
+/* ---------------- 基础查表 ---------------- */
+
+// 累计经验：取不大于 lv 的最大分段，段内线性
+function expAt(lv) {
+  lv = clamp(lv, 1, 60);
+  let idx = 0;
+  for (let i = 0; i < D.EXP.length; i++) {
+    if (D.EXP[i].lv <= lv) idx = i;
+  }
+  const s = D.EXP[idx];
+  return s.cum + (lv - s.lv) * s.per;
+}
+
+// 等级突破：跨越 (a, b] 之间的里程碑消耗合计
+function breakSum(a, b) {
+  const r = { low: 0, mid: 0, high: 0, denny: 0 };
+  D.BREAK.forEach(function (row) {
+    if (row.lv > a && row.lv <= b) {
+      r.low += row.low;
+      r.mid += row.mid;
+      r.high += row.high;
+      r.denny += row.denny;
+    }
+  });
+  return r;
+}
+
+// 通用「累计表差值」：a、b 为等级，field 为字段名
+function cumDelta(table, a, b, field) {
+  if (b <= a) return 0;
+  return rowAt(table, b)[field] - rowAt(table, a)[field];
+}
+
+function rowAt(table, lv) {
+  let idx = 0;
+  for (let i = 0; i < table.length; i++) {
+    if (table[i].lv <= lv) idx = i;
+  }
+  return table[idx];
+}
+
+/* ---------------- 单角色计算 ---------------- */
+
+/**
+ * @param {Object} t 目标 { lvFrom, lvTo, coreFrom, coreTo, engFrom, engTo }
+ * @param {Array}  skills [{from, to}] 5 个技能
+ * @param {Object} p 参数
+ */
+function computeSingle(t, skills, p, info) {
+  info = info || {};
+  const art = info.art || '强攻';
+  const elem = info.elem || '冰';
+  const engType = info.engType || art;
+  const expQty = Math.max(0, expAt(t.lvTo) - expAt(t.lvFrom));
+  const brk = breakSum(t.lvFrom, t.lvTo);
+
+  var s = { basic: 0, adv: 0, spec: 0, denny: 0, hamster: 0 };
+  skills.forEach(function (k) {
+    ['basic', 'adv', 'spec', 'denny', 'hamster'].forEach(function (f) {
+      s[f] += cumDelta(D.SKILL, k.from, k.to, f);
+    });
+  });
+
+  const core = {
+    dim: cumDelta(D.CORE, t.coreFrom, t.coreTo, 'dim'),
+    weekly: cumDelta(D.CORE, t.coreFrom, t.coreTo, 'weekly'),
+    denny: cumDelta(D.CORE, t.coreFrom, t.coreTo, 'denny')
+  };
+  const eng = {
+    module: cumDelta(D.ENGINE, t.engFrom, t.engTo, 'module'),
+    part: cumDelta(D.ENGINE, t.engFrom, t.engTo, 'part'),
+    denny: cumDelta(D.ENGINE, t.engFrom, t.engTo, 'denny')
+  };
+
+  // 单项折算电量
+  function e(qty, energy, yield_) {
+    if (yield_ <= 0) return 0;
+    return qty * energy / yield_;
+  }
+
+  const pE = p.runEnergy;
+  const items = [
+    { key: 'exp', name: '角色经验', unit: '经验', qty: expQty, energy: e(expQty, pE, p.expYield), note: '1 局约 ' + fmtInt(p.expYield) + ' 经验' },
+    { key: 'certLow', name: D.certName('初阶', art), unit: '个', qty: brk.low, energy: e(brk.low, pE, p.lowYield), note: '绿色·等级突破·按特性「' + art + '」' },
+    { key: 'certMid', name: D.certName('高阶', art), unit: '个', qty: brk.mid, energy: e(brk.mid, pE, p.midYield), note: '蓝色·等级突破·按特性「' + art + '」' },
+    { key: 'certHigh', name: D.certName('紫', art), unit: '个', qty: brk.high, energy: e(brk.high, pE, p.highYield), note: '紫色·等级突破·按特性「' + art + '」' },
+    { key: 'dennyBreak', name: '丁尼·等级突破', unit: '丁尼', qty: brk.denny, energy: e(brk.denny, pE, p.dennyYield), note: '突破消耗' },
+    { key: 'chipBasic', name: D.chipName('基础', elem), unit: '个', qty: s.basic, energy: e(s.basic, pE, p.basicYield), note: '5 个技能合计·按属性「' + elem + '」' },
+    { key: 'chipAdv', name: D.chipName('进阶', elem), unit: '个', qty: s.adv, energy: e(s.adv, pE, p.advYield), note: '5 个技能合计·按属性「' + elem + '」' },
+    { key: 'chipSpec', name: D.chipName('特化', elem), unit: '个', qty: s.spec, energy: e(s.spec, pE, p.specYield), note: '5 个技能合计·按属性「' + elem + '」' },
+    { key: 'hamster', name: '「仓鼠笼」访问器', unit: '个', qty: s.hamster, energy: 0, note: '活动/礼包限定，不计电量' },
+    { key: 'dennySkill', name: '丁尼·技能升级', unit: '丁尼', qty: s.denny, energy: e(s.denny, pE, p.dennyYield), note: '技能升级消耗' },
+    { key: 'dim', name: '高维数据', unit: '个', qty: core.dim, energy: e(core.dim, p.dimEnergy, p.dimYield), note: '专家挑战室' },
+    { key: 'weekly', name: '周本材料-核心技突破材料', unit: '个', qty: core.weekly, energy: 0, note: '每周 3 次免费恶猎' },
+    { key: 'dennyCore', name: '丁尼·核心技', unit: '丁尼', qty: core.denny, energy: e(core.denny, pE, p.dennyYield), note: '核心 A→F' },
+    { key: 'engModule', name: '音擎升级材料', unit: '个', qty: eng.module, energy: e(eng.module, p.engEnergy, p.moduleYield), note: '音擎副本' },
+    { key: 'engPart', name: '音擎突破材料（' + engType + '）', unit: '个', qty: eng.part, energy: e(eng.part, p.engEnergy, p.partYield), note: '音擎副本·按特性「' + engType + '」' },
+    { key: 'dennyEng', name: '丁尼·音擎升级', unit: '丁尼', qty: eng.denny, energy: e(eng.denny, pE, p.dennyYield), note: '音擎升级消耗' }
+  ];
+
+  const total = items.reduce(function (a, b) { return a + b.energy; }, 0);
+  const engEnergy = items[13].energy + items[14].energy + items[15].energy;
+  const noEngTotal = total - engEnergy;
+  const daily = p.dailyNatural + p.dailyCoffee + p.dailyExtra;
+
+  // 汇总材料（给计划 / 缺口页用）
+  const mat = {
+    exp: expQty,
+    denny: brk.denny + s.denny + core.denny + eng.denny,
+    certLow: brk.low,
+    certMid: brk.mid,
+    certHigh: brk.high,
+    chipBasic: s.basic,
+    chipAdv: s.adv,
+    chipSpec: s.spec,
+    dim: core.dim,
+    weekly: core.weekly,
+    hamster: s.hamster,
+    engModule: eng.module,
+    engPart: eng.part
+  };
+
+  return {
+    items: items,
+    total: total,
+    engEnergy: engEnergy,
+    noEngTotal: noEngTotal,
+    daily: daily,
+    days: daily > 0 ? total / daily : 0,
+    noEngDays: daily > 0 ? noEngTotal / daily : 0,
+    batteries: total / 60,
+    ratio: total > 0 ? noEngTotal / total : 0,
+    mat: mat
+  };
+}
+
+/* ---------------- 多角色汇总 ---------------- */
+
+function aggregate(rows, p) {
+  const sum = {
+    exp: 0, denny: 0, certLow: 0, certMid: 0, certHigh: 0,
+    chipBasic: 0, chipAdv: 0, chipSpec: 0,
+    dim: 0, weekly: 0, hamster: 0, engModule: 0, engPart: 0,
+    energy: 0,
+    certs: {}, chips: {}, engs: {}, usedElems: [], usedArts: [], usedEngTypes: []
+  };
+
+  rows.forEach(function (r) {
+    const art = r.art || '强攻';
+    const elem = r.elem || '冰';
+    const engType = (r.engType || art).replace(/型$/, '');
+    const stem = D.CHIP_STEM[elem] || elem;
+    const r2 = computeSingle(
+      { lvFrom: r.lv[0], lvTo: r.lv[1], coreFrom: r.core[0], coreTo: r.core[1], engFrom: r.eng[0], engTo: r.eng[1] },
+      r.skills.map(function (k) { return { from: k[0], to: k[1] }; }),
+      p,
+      { art: art, elem: elem, engType: engType }
+    );
+
+    sum.exp += r2.mat.exp;
+    sum.denny += r2.mat.denny;
+    sum.certLow += r2.mat.certLow;
+    sum.certMid += r2.mat.certMid;
+    sum.certHigh += r2.mat.certHigh;
+    sum.chipBasic += r2.mat.chipBasic;
+    sum.chipAdv += r2.mat.chipAdv;
+    sum.chipSpec += r2.mat.chipSpec;
+    sum.dim += r2.mat.dim;
+    sum.weekly += r2.mat.weekly;
+    sum.hamster += r2.mat.hamster;
+    sum.engModule += r2.mat.engModule;
+    sum.engPart += r2.mat.engPart;
+    sum.energy += r2.total;
+
+    // 按特性 / 属性 / 音擎型分别累计（不同属性、特性的材料不能合并）
+    if (!sum.certs[art]) sum.certs[art] = { low: 0, mid: 0, high: 0, equiv: 0, count: 0 };
+    sum.certs[art].low += r2.mat.certLow;
+    sum.certs[art].mid += r2.mat.certMid;
+    sum.certs[art].high += r2.mat.certHigh;
+    sum.certs[art].count += 1;
+
+    // 芯片按「芯片种类」归组：冰与烈霜共用冰结芯片，自动合并
+    if (!sum.chips[stem]) sum.chips[stem] = { basic: 0, adv: 0, spec: 0, equiv: 0, count: 0, elems: [] };
+    sum.chips[stem].basic += r2.mat.chipBasic;
+    sum.chips[stem].adv += r2.mat.chipAdv;
+    sum.chips[stem].spec += r2.mat.chipSpec;
+    sum.chips[stem].count += 1;
+    if (sum.chips[stem].elems.indexOf(elem) < 0) sum.chips[stem].elems.push(elem);
+
+    if (!sum.engs[engType]) sum.engs[engType] = { part: 0, count: 0 };
+    sum.engs[engType].part += r2.mat.engPart;
+    sum.engs[engType].count += 1;
+  });
+
+  sum.usedArts = D.ARTS.filter(function (a) { return sum.certs[a]; });
+  sum.usedEngTypes = D.ENG_TYPES.filter(function (t) { return sum.engs[t]; });
+  sum.usedChips = Object.keys(sum.chips);
+  sum.usedArts.forEach(function (a) {
+    const c = sum.certs[a];
+    c.equiv = c.low / 9 + c.mid / 3 + c.high;
+  });
+  sum.usedChips.forEach(function (k) {
+    const c = sum.chips[k];
+    c.equiv = c.basic / 9 + c.adv / 3 + c.spec;
+  });
+
+  sum.days = p.dailyNatural + p.dailyCoffee + p.dailyExtra > 0
+    ? sum.energy / (p.dailyNatural + p.dailyCoffee + p.dailyExtra) : 0;
+  sum.batteries = sum.energy / 60;
+  sum.certEquiv = sum.certLow / 9 + sum.certMid / 3 + sum.certHigh;
+  sum.chipEquiv = sum.chipBasic / 9 + sum.chipAdv / 3 + sum.chipSpec;
+  sum.expBooks = sum.exp / 3000;
+  return sum;
+}
+
+/* ---------------- 资源缺口 ---------------- */
+
+/**
+ * @param {Object} s aggregate 结果
+ * @param {Object} inv { exp:{top,mid,low}, denny:{...}, ... }
+ * @param {Object} p 参数
+ */
+function computeGap(s, inv, p) {
+  const certRows = (s.usedArts || []).map(function (art) {
+    const c = s.certs[art];
+    return {
+      key: 'cert_' + art,
+      name: '角色突破材料 · ' + art,
+      unit: '个',
+      demand: c.equiv,
+      midDiv: 3,
+      lowDiv: 9,
+      yield: p.highYield,
+      runEnergy: p.runEnergy,
+      note: '绿=' + D.certName('初阶', art) + '，蓝=' + D.certName('高阶', art) + '，紫=' + D.certName('紫', art)
+    };
+  });
+
+  const chipRows = (s.usedChips || []).map(function (stem) {
+    const c = s.chips[stem];
+    const label = c.elems && c.elems.length ? c.elems.join(' / ') : stem;
+    return {
+      key: 'chip_' + stem,
+      name: '技能升级材料 · ' + stem,
+      unit: '个',
+      demand: c.equiv,
+      midDiv: 3,
+      lowDiv: 9,
+      yield: p.specYield,
+      runEnergy: p.runEnergy,
+      note: '绿=基础' + stem + '芯片，蓝=进阶' + stem + '芯片，紫=特化' + stem + '芯片（属性：' + label + '）'
+    };
+  });
+
+  const engRows = (s.usedEngTypes || []).map(function (t) {
+    const short = t.replace(/型$/, '');
+    return {
+      key: 'engPart_' + short,
+      name: '音擎突破材料 · ' + short,
+      unit: '个',
+      demand: s.engs[t].part,
+      midDiv: 3,
+      lowDiv: 9,
+      yield: p.partYield,
+      runEnergy: p.engEnergy,
+      note: '绿=' + D.partName('普通', short) + '，蓝=' + D.partName('增强型', short) + '，紫=' + D.partName('特化型', short)
+    };
+  });
+
+  const rows = [
+    {
+      key: 'exp', name: '代理人经验', unit: '本', demand: s.expBooks,
+      midDiv: 5, lowDiv: 30, yield: p.expYield / 3000, runEnergy: p.runEnergy,
+      note: '紫书 3000/本，蓝书 600/本，绿书 100/本'
+    },
+    { key: 'denny', name: '丁尼', unit: '丁尼', demand: s.denny, midDiv: 3, lowDiv: 9, yield: p.dennyYield, runEnergy: p.runEnergy, single: true, note: '不分等级，直接填持有数量；全部丁尼合并计算' }
+  ]
+    .concat(certRows)
+    .concat(chipRows)
+    .concat([
+      { key: 'dim', name: '高维数据-核心技突破材料', unit: '个', demand: s.dim, midDiv: 3, lowDiv: 9, yield: p.dimYield, runEnergy: p.dimEnergy, single: true, note: '不分等级；专家挑战室 40 电量/局，单局 5 个' },
+      { key: 'weekly', name: '周本材料-核心技突破材料', unit: '个', demand: s.weekly, midDiv: 3, lowDiv: 9, yield: 0, runEnergy: 60, single: true, note: '不分等级；每周免费，不计电量' },
+      { key: 'hamster', name: '「仓鼠笼」访问器', unit: '个', demand: s.hamster, midDiv: 3, lowDiv: 9, yield: 0, runEnergy: 0, single: true, note: '不分等级；活动/礼包限定' },
+      { key: 'engModule', name: '音擎升级材料', unit: '个', demand: s.engModule, midDiv: 3, lowDiv: 9, yield: p.moduleYield, runEnergy: p.engEnergy, note: '音擎能源模块；所有特性通用，不分类' }
+    ])
+    .concat(engRows);
+
+  let totalRuns = 0, totalEnergy = 0;
+  const out = rows.map(function (r) {
+    const h = (inv && inv[r.key]) || { top: 0, mid: 0, low: 0 };
+    const equiv = r.single
+      ? (h.top || 0)
+      : (h.top || 0) + (h.mid || 0) / r.midDiv + (h.low || 0) / r.lowDiv;
+    const gap = Math.max(0, r.demand - equiv);
+    const runs = r.yield > 0 ? Math.ceil(gap / r.yield) : 0;
+    const energy = runs * r.runEnergy;
+    totalRuns += runs;
+    totalEnergy += energy;
+    return {
+      key: r.key, name: r.name, unit: r.unit, demand: r.demand, single: !!r.single,
+      top: h.top || 0, mid: h.mid || 0, low: h.low || 0,
+      equiv: equiv, gap: gap, yield: r.yield, runEnergy: r.runEnergy,
+      runs: runs, energy: energy, note: r.note
+    };
+  });
+
+  return {
+    rows: out,
+    totalRuns: totalRuns,
+    totalEnergy: totalEnergy,
+    days: (p.dailyNatural + p.dailyCoffee + p.dailyExtra) > 0
+      ? totalEnergy / (p.dailyNatural + p.dailyCoffee + p.dailyExtra) : 0,
+    batteries: totalEnergy / 60
+  };
+}
+
+/* ---------------- 工具 ---------------- */
+
+function clamp(v, min, max) {
+  v = Number(v);
+  if (isNaN(v)) v = min;
+  return Math.max(min, Math.min(max, v));
+}
+
+function fmtInt(n) {
+  n = Math.round(Number(n) || 0);
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function fmtDec(n, d) {
+  d = d === undefined ? 1 : d;
+  const v = Number(n) || 0;
+  const s = v.toFixed(d);
+  const parts = s.split('.');
+  const i = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  return parts.length > 1 ? i + '.' + parts[1] : i;
+}
+
+module.exports = {
+  expAt: expAt,
+  breakSum: breakSum,
+  cumDelta: cumDelta,
+  computeSingle: computeSingle,
+  aggregate: aggregate,
+  computeGap: computeGap,
+  fmtInt: fmtInt,
+  fmtDec: fmtDec,
+  clamp: clamp
+};
+
+var C = module.exports;
+
+(function () {
+  var KEY = 'zzz_preview_state';
+  var state = null;
+
+  function fullRow(name) {
+    return { name: name, elem: '冰', art: '强攻', engType: '强攻', lv: [1, 60], core: [1, 6], skills: [[1, 12], [1, 12], [1, 12], [1, 12], [1, 12]], eng: [1, 60], noEng: false };
+  }
+  function generalRow(name) {
+    return { name: name, elem: '冰', art: '强攻', engType: '强攻', lv: [1, 60], core: [1, 6], skills: [[1, 11], [1, 7], [1, 7], [1, 11], [1, 12]], eng: [1, 60], noEng: false };
+  }
+  function selRow(list, val, kind, i) {
+    var o = '';
+    for (var x = 0; x < list.length; x++) {
+      o += '<option value="' + list[x] + '"' + (list[x] === val ? ' selected' : '') + '>' + list[x] + '</option>';
+    }
+    return '<select class="picksel" data-kind="' + kind + '" data-i="' + i + '">' + o + '</select>';
+  }
+  function isEmptyRow(r) {
+    return r.lv[0] === r.lv[1] && r.core[0] === r.core[1] && r.eng[0] === r.eng[1] &&
+      r.skills.every(function (k) { return k[0] === k[1]; });
+  }
+  function defaultPlan() { return [fullRow('角色1')]; }
+
+  function initState() {
+    var raw = null;
+    try { raw = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { raw = null; }
+    if (raw && raw.t) {
+      // 兼容旧状态：单局高维产出由 2.5 调整为 5
+      if (raw.p && Number(raw.p.dimYield) === 2.5) raw.p.dimYield = 5;
+      if (raw.plan && raw.plan.length) {
+        while (raw.plan.length > 1 && isEmptyRow(raw.plan[raw.plan.length - 1])) raw.plan.pop();
+        raw.plan.forEach(function (r) {
+          if (!r.elem) r.elem = '冰';
+          if (!r.art) r.art = '强攻';
+          if (!r.engType) r.engType = r.art;
+          r.engType = String(r.engType).replace(/型$/, '');
+          if (D.ENG_TYPES.indexOf(r.engType) < 0) r.engType = r.art;
+        });
+        if (!raw.plan.length) raw.plan = defaultPlan();
+      }
+      return raw;
+    }
+    return {
+      tab: 'calc',
+      info: { elem: '冰', art: '强攻', engType: '强攻' },
+      t: { lvFrom: 1, lvTo: 60, coreFrom: 1, coreTo: 6, engFrom: 1, engTo: 60 },
+      skills: [{ name: '普攻', from: 1, to: 12 }, { name: '闪避', from: 1, to: 12 }, { name: '支援', from: 1, to: 12 }, { name: '特殊技', from: 1, to: 12 }, { name: '终结技', from: 1, to: 12 }],
+      p: Object.assign({}, D.PARAMS),
+      plan: defaultPlan(),
+      inv: {},
+      active: 0,
+      showParams: false
+    };
+  }
+
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function setPath(path, val) {
+    var parts = String(path).split('.');
+    var cur = state;
+    for (var i = 0; i < parts.length - 1; i++) cur = cur[parts[i]];
+    cur[parts[parts.length - 1]] = val;
+  }
+  function getPath(path) {
+    var parts = String(path).split('.');
+    var cur = state;
+    for (var i = 0; i < parts.length; i++) cur = cur[parts[i]];
+    return cur;
+  }
+
+  function num(x) {
+    var v = Number(x) || 0;
+    if (Math.abs(v - Math.round(v)) < 0.05) return C.fmtInt(v);
+    return C.fmtDec(v, 1);
+  }
+
+  function coreSel(path, val) {
+    var o = '';
+    for (var c = 1; c <= 6; c++) {
+      o += '<option value="' + c + '"' + (c === Number(val) ? ' selected' : '') + '>' + D.CORE_LABELS[c - 1] + '</option>';
+    }
+    return '<select class="picksel" data-kind="core" data-path="' + path + '">' + o + '</select>';
+  }
+
+  function numInput(path, val, min, max) {
+    return '<input class="numin" type="number" inputmode="numeric" data-kind="num" data-path="' + path + '" data-min="' + min + '" data-max="' + max + '" value="' + val + '" />';
+  }
+
+  function stepper(val, min, max, attrs) {
+    return '<div class="step">' +
+      '<button data-act="step" data-d="-1" data-min="' + min + '" data-max="' + max + '" ' + attrs + '>−</button>' +
+      '<span>' + val + '</span>' +
+      '<button data-act="step" data-d="1" data-min="' + min + '" data-max="' + max + '" ' + attrs + '>+</button>' +
+      '</div>';
+  }
+
+  /* ---------- 计算器 ---------- */
+  function renderCalc() {
+    var t = state.t, skills = state.skills, p = state.p;
+    var info = state.info || { elem: '冰', art: '强攻', engType: '强攻' };
+    var r = C.computeSingle(t, skills.map(function (s) { return { from: s.from, to: s.to }; }), p, info);
+
+    function infoSel(list, val, field) {
+      var o = '';
+      for (var x = 0; x < list.length; x++) {
+        o += '<option value="' + list[x] + '"' + (list[x] === val ? ' selected' : '') + '>' + list[x] + '</option>';
+      }
+      return '<select class="picksel" data-kind="info" data-field="' + field + '">' + o + '</select>';
+    }
+
+    var targetRows = [
+      '<div class="row"><div class="label">属性<span class="sublabel">芯片按属性分</span></div>' + infoSel(D.ELEMENTS, info.elem, 'elem') + '</div>',
+      '<div class="row"><div class="label">特性<span class="sublabel">认证章按特性分</span></div>' + infoSel(D.ARTS, info.art, 'art') + '</div>',
+      '<div class="row"><div class="label">音擎特性<span class="sublabel">音擎突破件按特性分</span></div>' + infoSel(D.ENG_TYPES, info.engType, 'engType') + '</div>',
+      '<div class="row"><div class="label">角色等级</div><div class="pair">' +
+      stepper(t.lvFrom, 1, 60, 'data-path="t.lvFrom"') + '<span class="arrow">→</span>' +
+      stepper(t.lvTo, 1, 60, 'data-path="t.lvTo"') + '</div></div>',
+      '<div class="row"><div class="label">核心技<span class="sublabel">A=1 · F=6</span></div><div class="pair">' +
+      '<button class="pickbtn" data-act="core" data-path="t.coreFrom" data-d="-1">' + D.CORE_LABELS[t.coreFrom - 1] + '</button><span class="arrow">→</span>' +
+      '<button class="pickbtn" data-act="core" data-path="t.coreTo" data-d="1">' + D.CORE_LABELS[t.coreTo - 1] + '</button>' +
+      '</div></div>'
+    ].join('');
+
+    var skillRows = skills.map(function (s, i) {
+      return '<div class="row"><div class="label">' + (i + 1) + ' · ' + s.name + '</div><div class="pair">' +
+        stepper(s.from, 1, 12, 'data-path="skills.' + i + '.from"') + '<span class="arrow">→</span>' +
+        stepper(s.to, 1, 12, 'data-path="skills.' + i + '.to"') + '</div></div>';
+    }).join('');
+
+    var engRow = '<div class="row"><div class="label">音擎等级<span class="sublabel">按 20/30/40/50/60 里程碑累计</span></div><div class="pair">' +
+      stepper(t.engFrom, 1, 60, 'data-path="t.engFrom"') + '<span class="arrow">→</span>' +
+      stepper(t.engTo, 1, 60, 'data-path="t.engTo"') + '</div></div>';
+
+    var paramRows = [
+      ['runEnergy', '实战模拟室单局电量', '电量'], ['expYield', '单局经验产出', '经验'],
+      ['dennyYield', '单局丁尼产出', '丁尼'], ['lowYield', '单局初阶认证章', '个'],
+      ['midYield', '单局高阶认证章', '个'], ['highYield', '单局特化认证章', '个'],
+      ['basicYield', '单局基础芯片', '个'], ['advYield', '单局进阶芯片', '个'],
+      ['specYield', '单局特化芯片', '个'], ['dimEnergy', '专家挑战室单局电量', '电量'],
+      ['dimYield', '单局高维数据', '个'], ['engEnergy', '音擎副本单局电量', '电量'],
+      ['moduleYield', '单局能源模块', '个'], ['partYield', '单局改装部件', '个'],
+      ['dailyNatural', '每日自然恢复', '电量'], ['dailyCoffee', '每日咖啡', '电量'],
+      ['dailyExtra', '每日额外电量', '电量']
+    ].map(function (x) {
+      return '<div class="row"><div class="label">' + x[1] + '<span class="sublabel">单位：' + x[2] + '</span></div>' +
+        '<input class="pinput" style="width:86px;height:32px;text-align:right;font-size:13px;color:#d9ff3f;background:#1b1e26;border:1px solid #2e333d;border-radius:4px;padding:0 8px" type="number" step="any" data-kind="param" data-key="' + x[0] + '" value="' + state.p[x[0]] + '" /></div>';
+    }).join('');
+
+    var items = r.items.map(function (i) {
+      return '<div class="mrow"><div><div class="n">' + i.name + '</div><div class="note">' + i.note + '</div></div>' +
+        '<div class="r"><div class="q">' + C.fmtInt(i.qty) + ' <span style="font-size:10px;color:' + '#6f7480' + '">' + i.unit + '</span></div>' +
+        '<div class="e ' + (i.energy > 0 ? '' : 'zero') + '">' + (i.energy > 0 ? C.fmtInt(i.energy) + ' 电' : '不计电量') + '</div></div></div>';
+    }).join('');
+
+    return '<div class="hero"><div class="tag">ZZZ · GROWTH COST</div><h1>养成电量计算器</h1><div class="sub">等级 · 技能 · 核心 · 音擎 · 一次算清</div></div>' +
+      '<div class="card"><div class="sec"><div class="bar"></div><h2>养成目标</h2><div class="r">单个代理人</div></div>' +
+      targetRows + '<div class="skill-head" style="margin:10px 0 4px;font-size:11px;color:#7b818d">技能等级（5 个技能分别填）</div>' + skillRows + engRow + '</div>' +
+
+      '<div class="card"><div class="sec"><div class="bar"></div><h2>电量与掉落参数</h2><div class="r" data-act="toggleParams">' + (state.showParams ? '收起 ▲' : '展开 ▼') + '</div></div>' +
+      (state.showParams ? paramRows + '<button class="btng" data-act="resetParams">恢复默认参数</button>' :
+        '<div class="hint">按最高难度实战模拟室 20 电量/局、社区实测均值估算，想改掉落就点开这里。</div>') + '</div>' +
+
+      '<div class="card"><div class="sec"><div class="bar"></div><h2>材料需求与电量折算</h2><div class="r">AUTO</div></div>' + items + '</div>' +
+
+      '<div class="card lime"><div class="sec"><div class="bar"></div><h2>结论</h2><div class="r">DAILY ' + C.fmtInt(r.daily) + '</div></div>' +
+      '<div class="stat-grid">' +
+      '<div class="stat"><div class="statbox"><b>' + C.fmtInt(r.total) + '</b><i>所需电量合计</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b>' + C.fmtDec(r.days, 1) + '</b><i>预计天数</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b class="o">' + C.fmtDec(r.batteries, 1) + '</b><i>折合以太电池（60/个）</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b class="o">' + C.fmtDec(r.ratio * 100, 1) + '%</b><i>角色本体占比（不含音擎）</i></div></div>' +
+      '</div><div class="hint">不含音擎：' + C.fmtInt(r.noEngTotal) + ' 电量，约 ' + C.fmtDec(r.noEngDays, 1) + ' 天</div></div>' +
+
+      '<button class="btn" data-act="savePlan">写入养成计划</button>' +
+      '<button class="btng" data-act="fillMax">套用满级模板（1→60 全满）</button>' +
+      '<div class="tfoot">数据取自官方/维基与社区实测，掉落有浮动，可在参数区自行调整。</div>';
+  }
+
+  /* ---------- 计划 ---------- */
+  function renderPlan() {
+    var p = state.p, rows = state.plan;
+    var sum = C.aggregate(rows, p);
+
+    var cards = rows.map(function (r, i) {
+      var TPL_SK = [11, 7, 7, 11, 12];
+      var noEng = !!r.noEng;
+      var tplTop = r.lv[1] === 60 && r.core[1] === 6 && (noEng || r.eng[1] === 60);
+      var allMax = tplTop && r.skills.every(function (k) { return k[1] === 12; });
+      var isGen = tplTop && r.skills.every(function (k, si) { return k[1] === Math.max(k[0], TPL_SK[si]); });
+      var rowTpl = allMax ? 'max' : (isGen ? 'general' : '');
+      var s = C.computeSingle({ lvFrom: r.lv[0], lvTo: r.lv[1], coreFrom: r.core[0], coreTo: r.core[1], engFrom: r.eng[0], engTo: r.eng[1] }, r.skills.map(function (k) { return { from: k[0], to: k[1] }; }), p, { art: r.art, elem: r.elem, engType: String(r.engType || r.art).replace(/型$/, '') });
+      var open = state.active === i;
+      var body = '';
+      if (open) {
+        body = '<div class="pbody">' +
+          '<div class="row"><div class="label">角色名</div><input style="width:130px;height:30px;text-align:right;font-size:13px;color:#e9ecf1;background:#1b1e26;border:1px solid #2e333d;border-radius:4px;padding:0 8px" type="text" data-kind="name" data-i="' + i + '" value="' + r.name + '" maxlength="12" /></div>' +
+          '<div class="row"><div class="label">属性<span class="sublabel">决定技能芯片种类</span></div>' + selRow(D.ELEMENTS, r.elem, 'elem', i) + '</div>' +
+          '<div class="row"><div class="label">特性<span class="sublabel">决定认证章种类</span></div>' + selRow(D.ARTS, r.art, 'art', i) + '</div>' +
+          '<div class="row"><div class="label">音擎特性<span class="sublabel">决定音擎突破件种类</span></div>' + selRow(D.ENG_TYPES, r.engType, 'engType', i) + '</div>' +
+          '<div class="row"><div class="label">等级<span class="sublabel">只能填 1–60</span></div><div class="pair">' + numInput('plan.' + i + '.lv.0', r.lv[0], 1, 60) + '<span class="arrow">→</span>' + numInput('plan.' + i + '.lv.1', r.lv[1], 1, 60) + '</div></div>' +
+          '<div class="row"><div class="label">核心技<span class="sublabel">A ~ F，点选</span></div><div class="pair">' +
+          coreSel('plan.' + i + '.core.0', r.core[0]) + '<span class="arrow">→</span>' + coreSel('plan.' + i + '.core.1', r.core[1]) + '</div></div>' +
+          r.skills.map(function (k, si) {
+            return '<div class="row"><div class="label">' + D.SKILL_NAMES[si] + '</div><div class="pair">' +
+              numInput('plan.' + i + '.skills.' + si + '.0', k[0], 1, 12) + '<span class="arrow">→</span>' +
+              numInput('plan.' + i + '.skills.' + si + '.1', k[1], 1, 12) + '</div></div>';
+          }).join('') +
+          '<div class="row"><div class="label">音擎等级<span class="sublabel">' + (noEng ? '已选择「不含音擎」，不计音擎消耗' : '只能填 1–60') + '</span></div><div class="pair">' + numInput('plan.' + i + '.eng.0', r.eng[0], 1, 60) + '<span class="arrow">→</span>' + numInput('plan.' + i + '.eng.1', r.eng[1], 1, 60) + '</div></div>' +
+          '<div style="display:flex;margin-top:8px"><button class="minibtn' + (rowTpl === 'general' ? ' key' : '') + '" data-act="rowGeneral" data-i="' + i + '">通用模版</button><button class="minibtn' + (rowTpl === 'max' ? ' key' : '') + '" data-act="rowMax" data-i="' + i + '">满级模板</button><button class="minibtn' + (noEng ? ' key' : '') + '" data-act="noEng" data-i="' + i + '">不含音擎</button><button class="minibtn" data-act="rowReset" data-i="' + i + '">重置</button></div>' +
+          '<div class="thint">通用模版：等级 60 · 核心技 F · 音擎 60 · 技能 普攻11 闪避7 支援7 特殊技11 终结技12（只改目标）</div>' +
+          '<div class="thint dim">按钮高亮表示「当前目标」正好等于该模板；手动改过目标后高亮消失。</div>' +
+          '</div>';
+      }
+      return '<div class="pcard ' + (s.total <= 0 ? 'empty' : '') + '">' +
+        '<div class="phead ' + (open ? 'on' : '') + '" data-act="toggleRow" data-i="' + i + '">' +
+        '<div class="pnum">' + (i + 1) + '</div><div class="pmain"><div class="pname">' + r.name + '</div>' +
+        '<div class="pdesc">' + r.elem + ' · ' + r.art + ' · 等级 ' + r.lv[0] + '→' + r.lv[1] + ' · 核心技 ' + D.CORE_LABELS[r.core[0] - 1] + '→' + D.CORE_LABELS[r.core[1] - 1] + ' · 音擎 ' + r.eng[0] + '→' + r.eng[1] + '</div></div>' +
+        '<div><div class="pen">' + C.fmtInt(s.total) + '</div><div class="punit">电量</div></div>' +
+        (rows.length > 1 ? '<button class="pdel" data-act="delRow" data-i="' + i + '">×</button>' : '') + '</div>' + body + '</div>';
+    }).join('');
+
+    var mats = [
+      ['角色经验', C.fmtInt(sum.exp)], ['丁尼', C.fmtInt(sum.denny)]
+    ];
+    (sum.usedArts || []).forEach(function (a) { mats.push(['认证章·' + a + '(紫)', C.fmtDec(sum.certs[a].equiv, 1)]); });
+    (sum.usedChips || []).forEach(function (k) { mats.push(['芯片·' + k + '(紫)', C.fmtDec(sum.chips[k].equiv, 1)]); });
+    mats.push(['高维数据', C.fmtInt(sum.dim)], ['周本素材', C.fmtInt(sum.weekly)], ['仓鼠笼', C.fmtInt(sum.hamster)], ['音擎蓄电池', C.fmtInt(sum.engModule)]);
+    (sum.usedEngTypes || []).forEach(function (x) { mats.push(['音擎突破材料·' + x, C.fmtInt(sum.engs[x].part)]); });
+    mats = mats.map(function (m) {
+      return '<div><b>' + m[1] + '</b><i>' + m[0] + '</i></div>';
+    }).join('');
+
+    var filled = rows.filter(function (r) {
+      return r.lv[1] > r.lv[0] || r.core[1] > r.core[0] || r.eng[1] > r.eng[0] ||
+        r.skills.some(function (k) { return k[1] > k[0]; });
+    }).length;
+
+    return '<div class="hero"><div class="tag">ZZZ · SQUAD PLAN</div><h1>多角色养成计划</h1><div class="sub">最多 8 名角色，材料与电量自动汇总</div></div>' +
+      '<div class="card lime"><div class="sec"><div class="bar"></div><h2>全队合计</h2><div class="r">' + filled + ' 名角色</div></div>' +
+      '<div class="stat-grid"><div class="stat"><div class="statbox"><b>' + C.fmtInt(sum.energy) + '</b><i>合计电量</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b class="o">' + C.fmtDec(sum.days, 1) + '</b><i>预计天数</i></div></div></div>' +
+      '<div class="mats">' + mats + '</div></div>' + cards +
+      '<button class="btng add" data-act="addRow">＋ 添加养成角色' + (rows.length >= 8 ? '（已达上限）' : '') + '</button>' +
+      '<button class="btng" data-act="clearAll">清空全部角色</button>' +
+      '<div class="pbar"><div><span class="l">合计电量 </span><b>' + C.fmtInt(sum.energy) + '</b></div><div class="r">' + C.fmtDec(sum.days, 1) + ' 天 · ' + filled + ' 名角色</div></div>';
+  }
+
+  /* ---------- 缺口 ---------- */
+  function renderGap() {
+    var p = state.p;
+    var sum = C.aggregate(state.plan, p);
+    var g = C.computeGap(sum, state.inv, p);
+
+    var rows = g.rows.map(function (r) {
+      return '<div class="gcard"><div class="ghead"><div class="gname">' + r.name + '<span class="unit">' + r.unit + '</span></div>' +
+        '<div class="gflag ' + (r.gap <= 0 ? 'done' : '') + '">' + (r.gap <= 0 ? '已足够' : '缺 ' + num(r.gap)) + '</div></div>' +
+        '<div class="gbyte"><span>需求 ' + num(r.demand) + '</span>' +
+        (r.single ? '' : '<span>等效 ' + num(r.equiv) + '</span>') +
+        '<span class="e">' + C.fmtInt(r.energy) + ' 电</span></div>' +
+        (r.single
+          ? '<div class="ghold one"><div class="hitem grow"><em>持有数量（' + r.unit + '）</em><input class="big" type="number" min="0" data-kind="hold" data-key="' + r.key + '" data-f="top" value="' + r.top + '" placeholder="0" /></div>' +
+            '<div class="hitem flag"><em>缺口</em><b class="gapv">' + (r.gap <= 0 ? '0' : num(r.gap)) + '</b></div></div>'
+          : '<div class="ghold">' +
+            '<div class="hitem"><em>紫</em><input type="number" min="0" data-kind="hold" data-key="' + r.key + '" data-f="top" value="' + r.top + '" /></div>' +
+            '<div class="hitem"><em>蓝</em><input type="number" min="0" data-kind="hold" data-key="' + r.key + '" data-f="mid" value="' + r.mid + '" /></div>' +
+            '<div class="hitem"><em>绿</em><input type="number" min="0" data-kind="hold" data-key="' + r.key + '" data-f="low" value="' + r.low + '" /></div>' +
+            '</div>') +
+        '<div class="gnote">' + r.note + '</div></div>';
+    }).join('');
+
+    var empty = sum.energy <= 0;
+
+    return '<div class="hero"><div class="tag">ZZZ · RESOURCE GAP</div><h1>资源持有与缺口</h1><div class="sub">填当前库存，自动扣减并换算刷取电量</div></div>' +
+      '<div class="card lime"><div class="sec"><div class="bar"></div><h2>还需刷取</h2><div class="r">每日 ' + C.fmtInt(p.dailyNatural + p.dailyCoffee + p.dailyExtra) + '</div></div>' +
+      '<div class="stat-grid cols3">' +
+      '<div class="stat"><div class="statbox"><b>' + C.fmtInt(g.totalEnergy) + '</b><i>所需电量</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b class="o">' + C.fmtDec(g.days, 1) + '</b><i>预计天数</i></div></div>' +
+      '<div class="stat"><div class="statbox"><b class="o">' + C.fmtDec(g.batteries, 1) + '</b><i>折合以太电池</i></div></div></div>' +
+      (empty ? '<div class="hint" style="border-left-color:#ff6b35;color:#ff9d6b">「计划」页还没有填写任何角色，需求为 0。先去计划页设好目标，再回来填库存。</div>'
+        : '<div class="hint">需求来自「计划」页已填角色的材料合计；持有按 3 绿 = 1 蓝、3 蓝 = 1 紫折算。</div>') +
+      '</div>' + rows +
+      '<button class="btng" data-act="clearInv">清空库存</button>' +
+      '<div class="tfoot">电量按单材料所需局数向上取整后再合计，与飞书原表口径一致。</div>';
+  }
+
+  /* ---------- 数据 ---------- */
+  function renderData() {
+    var tables = [
+      { t: '① 代理人等级经验', s: '官方分段累计', h: ['等级', '累计经验', '该段每级'], r: D.EXP.map(function (x) { return [x.lv, C.fmtInt(x.cum), C.fmtDec(x.per, 1)]; }) },
+      { t: '② 等级突破', s: '认证章 / 丁尼', h: ['等级', '初阶', '高阶', '特化', '丁尼'], r: D.BREAK.map(function (x) { return [x.lv, x.low, x.mid, x.high, C.fmtInt(x.denny)]; }) },
+      { t: '③ 单个技能（1~12）', s: '累计消耗', h: ['等级', '基础', '进阶', '特化', '丁尼', '仓鼠笼'], r: D.SKILL.map(function (x) { return [x.lv, x.basic, x.adv, x.spec, C.fmtInt(x.denny), x.hamster]; }) },
+      { t: '④ 核心技（A~F）', s: '累计消耗', h: ['等级', '高维', '周本', '丁尼'], r: D.CORE.map(function (x, i) { return [D.CORE_LABELS[i], x.dim, x.weekly, C.fmtInt(x.denny)]; }) },
+      { t: '⑤ 音擎升级', s: '突破里程碑累计', h: ['等级', '能源模块', '突破件', '丁尼'], r: D.ENGINE.map(function (x) { return [x.lv, x.module, x.part, C.fmtInt(x.denny)]; }) },
+      { t: '⑥ 属性 · 技能芯片', s: '芯片按属性分', h: ['属性', '基础', '进阶', '特化'], r: D.ELEMENTS.map(function (e) { return [e, D.chipName('基础', e), D.chipName('进阶', e), D.chipName('特化', e)]; }) },
+      { t: '⑦ 特性 · 认证章', s: '认证章按特性分', h: ['特性', '初阶', '高阶', '专属'], r: D.ARTS.map(function (a) { return [a, D.certName('初阶', a), D.certName('高阶', a), D.certName('紫', a)]; }) },
+      { t: '⑧ 音擎特性 · 突破件', s: '音擎突破件按特性分', h: ['特性', '普通', '增强型', '特化型'], r: D.ARTS.map(function (a) { return [a, D.partName('普通', a), D.partName('增强型', a), D.partName('特化型', a)]; }) }
+    ];
+
+    var html = tables.map(function (tb) {
+      var head = tb.h.map(function (h) { return '<div class="td h">' + h + '</div>'; }).join('');
+      var body = tb.r.map(function (row) {
+        return '<div class="tr">' + row.map(function (c, ci) { return '<div class="td ' + (ci === 0 ? 'k' : '') + '">' + c + '</div>'; }).join('') + '</div>';
+      }).join('');
+      return '<div class="card"><div class="sec"><div class="bar"></div><h2>' + tb.t + '</h2><div class="r">' + tb.s + '</div></div>' +
+        '<div class="thead">' + head + '</div>' + body + '</div>';
+    }).join('');
+
+    return '<div class="hero"><div class="tag">ZZZ · DATA SHEET</div><h1>养成数据表</h1><div class="sub">官方/维基数据 · 只读参考</div></div>' + html +
+      '<div class="card"><div class="sec"><div class="bar"></div><h2>口径说明</h2></div>' +
+      '<div class="tfoot" style="margin:0">· 非整十级经验按段内线性估算：20 级 3 万 / 30 级 9 万 / 40 级 22.5 万 / 50 级 45 万 / 60 级 90 万，其中 50→60 占全部经验的一半。<br>· 突破里程碑 20/30/40/50/60：认证章 4/32/30，丁尼合计 80 万。<br>· 5 技能全 12：基础 25、进阶 75、特化 250、仓鼠笼 5、丁尼 250 万。<br>· 核心 A→F：高维 60、周本 9、丁尼 40.5 万。<br>· 音擎 1→60：能源模块 200、音擎突破件 66、丁尼 40 万。<br>· 芯片按「属性」分，认证章与音擎突破件按「特性」分；总量不随属性 / 特性变化，只是材料种类不同。<br>· 多角色时同属性（同芯片）、同特性（同认证章 / 同组件）自动合并，属性或特性不同则分别出账。<br>· 烈霜沿用冰结芯片，流明 / 玄墨 / 凛刃各有独立芯片系列。</div></div>';
+  }
+
+  function tabs() {
+    var items = [['calc', '计算器', 'CALC'], ['plan', '计划', 'PLAN'], ['gap', '缺口', 'GAP'], ['data', '数据', 'DATA']];
+    return '<div class="tabs">' + items.map(function (x) {
+      return '<button class="' + (state.tab === x[0] ? 'on' : '') + '" data-act="tab" data-tab="' + x[0] + '">' + x[1] + '<span>' + x[2] + '</span></button>';
+    }).join('') + '</div>';
+  }
+
+  function render() {
+    var inner = state.tab === 'plan' ? renderPlan() : state.tab === 'gap' ? renderGap() :
+      state.tab === 'data' ? renderData() : renderCalc();
+    document.getElementById('app').innerHTML = inner + tabs();
+    save();
+  }
+
+  /* ---------- 交互 ---------- */
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-act]');
+    if (!el) return;
+    var act = el.getAttribute('data-act');
+
+    if (act === 'tab') { state.tab = el.getAttribute('data-tab'); render(); return; }
+
+    if (act === 'step') {
+      var path = el.getAttribute('data-path');
+      var d = Number(el.getAttribute('data-d'));
+      var min = Number(el.getAttribute('data-min'));
+      var max = Number(el.getAttribute('data-max'));
+      var v = Number(getPath(path)) + d;
+      v = Math.max(min, Math.min(max, v));
+      setPath(path, v);
+      render(); return;
+    }
+
+    if (act === 'core') {
+      var p2 = el.getAttribute('data-path');
+      var d2 = Number(el.getAttribute('data-d'));
+      var cur = Number(getPath(p2)) + d2;
+      if (cur < 1) cur = 1;
+      if (cur > 6) cur = 6;
+      setPath(p2, cur);
+      render(); return;
+    }
+
+    if (act === 'toggleParams') { state.showParams = !state.showParams; render(); return; }
+    if (act === 'resetParams') { state.p = Object.assign({}, D.PARAMS); render(); return; }
+
+    if (act === 'fillMax') {
+      state.t = { lvFrom: 1, lvTo: 60, coreFrom: 1, coreTo: 6, engFrom: 1, engTo: 60 };
+      state.skills = [{ name: '普攻', from: 1, to: 12 }, { name: '闪避', from: 1, to: 12 }, { name: '支援', from: 1, to: 12 }, { name: '特殊技', from: 1, to: 12 }, { name: '终结技', from: 1, to: 12 }];
+      render(); return;
+    }
+
+    if (act === 'savePlan') {
+      var idx = -1;
+      for (var i = 0; i < state.plan.length; i++) {
+        var r = state.plan[i];
+        if (r.lv[0] === r.lv[1] && r.core[0] === r.core[1] && r.eng[0] === r.eng[1] &&
+          r.skills.every(function (k) { return k[0] === k[1]; })) { idx = i; break; }
+      }
+      if (idx < 0) { alert('计划已满 8 人，可先在计划页清空'); return; }
+      state.plan[idx] = {
+        name: '角色' + (idx + 1),
+        lv: [state.t.lvFrom, state.t.lvTo], core: [state.t.coreFrom, state.t.coreTo],
+        skills: state.skills.map(function (s) { return [s.from, s.to]; }), eng: [state.t.engFrom, state.t.engTo]
+      };
+      alert('已写入第 ' + (idx + 1) + ' 位角色');
+      render(); return;
+    }
+
+    if (act === 'toggleRow') {
+      var i2 = Number(el.getAttribute('data-i'));
+      state.active = state.active === i2 ? -1 : i2;
+      render(); return;
+    }
+    if (act === 'addRow') {
+      if (state.plan.length >= 8) { alert('最多 8 名角色'); return; }
+      state.plan.push(generalRow('角色' + (state.plan.length + 1)));
+      state.active = state.plan.length - 1;
+      render(); return;
+    }
+    if (act === 'delRow') {
+      var iD = Number(el.getAttribute('data-i'));
+      if (state.plan.length <= 1) return;
+      state.plan.splice(iD, 1);
+      state.plan.forEach(function (r, idx) {
+        if (r.name === '角色' + (idx + 2)) r.name = '角色' + (idx + 1);
+      });
+      if (state.active >= state.plan.length) state.active = state.plan.length - 1;
+      render(); return;
+    }
+    if (act === 'noEng') {
+      var iN = Number(el.getAttribute('data-i'));
+      var rN = state.plan[iN];
+      var on = !rN.noEng;
+      rN.noEng = on;
+      rN.eng = on ? [rN.eng[0], rN.eng[0]] : [rN.eng[0], 60];
+      render(); return;
+    }
+    if (act === 'rowGeneral') {
+      var g = Number(el.getAttribute('data-i'));
+      var r5 = state.plan[g];
+      var T = [11, 7, 7, 11, 12];
+      state.plan[g] = {
+        name: r5.name,
+        lv: [r5.lv[0], Math.max(r5.lv[0], 60)],
+        core: [r5.core[0], Math.max(r5.core[0], 6)],
+        eng: r5.noEng ? [r5.eng[0], r5.eng[0]] : [r5.eng[0], Math.max(r5.eng[0], 60)],
+        noEng: !!r5.noEng,
+        skills: r5.skills.map(function (k, si) { return [k[0], Math.max(k[0], T[si])]; })
+      };
+      render(); return;
+    }
+    if (act === 'rowMax') {
+      var i3 = Number(el.getAttribute('data-i'));
+      var rM = state.plan[i3];
+      state.plan[i3] = {
+        name: rM.name,
+        lv: [rM.lv[0], 60], core: [rM.core[0], 6],
+        eng: rM.noEng ? [rM.eng[0], rM.eng[0]] : [rM.eng[0], 60],
+        noEng: !!rM.noEng,
+        skills: rM.skills.map(function (k) { return [k[0], 12]; })
+      };
+      render(); return;
+    }
+    if (act === 'rowReset') {
+      var i4 = Number(el.getAttribute('data-i'));
+      state.plan[i4] = { name: '角色' + (i4 + 1), lv: [1, 1], core: [1, 1], skills: [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1]], eng: [1, 1] };
+      render(); return;
+    }
+    if (act === 'clearAll') {
+      if (confirm('清空全部角色？')) {
+        state.plan = defaultPlan();
+        state.plan[0].lv = [1, 1]; state.plan[0].core = [1, 1];
+        state.plan[0].skills = [[1, 1], [1, 1], [1, 1], [1, 1], [1, 1]]; state.plan[0].eng = [1, 1];
+        render();
+      }
+      return;
+    }
+    if (act === 'clearInv') {
+      if (confirm('清空库存？')) { state.inv = {}; render(); }
+      return;
+    }
+  });
+
+  document.addEventListener('change', function (e) {
+    var el = e.target;
+    var kind = el.getAttribute('data-kind');
+    if (!kind) return;
+    var v = el.value;
+    if (kind === 'param') {
+      state.p[el.getAttribute('data-key')] = parseFloat(v) || 0;
+    } else if (kind === 'hold') {
+      var key = el.getAttribute('data-key');
+      var f = el.getAttribute('data-f');
+      if (!state.inv[key]) state.inv[key] = { top: 0, mid: 0, low: 0 };
+      state.inv[key][f] = parseInt(v, 10) || 0;
+    } else if (kind === 'core') {
+      setPath(el.getAttribute('data-path'), Number(v));
+    } else if (kind === 'num') {
+      var pn = el.getAttribute('data-path');
+      var nmin = Number(el.getAttribute('data-min'));
+      var nmax = Number(el.getAttribute('data-max'));
+      var n = parseInt(String(v).replace(/[^0-9]/g, ''), 10);
+      if (isNaN(n)) n = nmin;
+      n = Math.max(nmin, Math.min(nmax, n));
+      setPath(pn, n);
+    } else if (kind === 'info') {
+      var field = el.getAttribute('data-field');
+      if (!state.info) state.info = { elem: '冰', art: '强攻', engType: '强攻' };
+      var oldArt2 = state.info.art;
+      state.info[field] = v;
+      if (field === 'art' && String(state.info.engType || '').replace(/型$/, '') === oldArt2) state.info.engType = v;
+    } else if (kind === 'elem' || kind === 'art' || kind === 'engType') {
+      var ix = Number(el.getAttribute('data-i'));
+      var rw = state.plan[ix];
+      if (kind === 'elem') rw.elem = v;
+      if (kind === 'art') {
+        var oldArt = rw.art;
+        rw.art = v;
+        if (String(rw.engType || '').replace(/型$/, '') === oldArt) rw.engType = v;
+      }
+      if (kind === 'engType') rw.engType = v;
+    } else if (kind === 'name') {
+      var i = Number(el.getAttribute('data-i'));
+      state.plan[i].name = v || ('角色' + (i + 1));
+    }
+    render();
+  });
+
+  state = initState();
+  render();
+})();
+</script>
+</body>
+</html>
